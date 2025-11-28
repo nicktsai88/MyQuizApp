@@ -333,7 +333,6 @@
             <ul id="history-list"></ul>
             <div style="margin-top: 30px;">
                 <button class="btn" onclick="goToLevelScreen()">🗺️ 返回探險地圖</button>
-                <button class="btn btn-gray" onclick="clearAllHistory()">🔥 清除全部</button>
             </div>
         </div>
         
@@ -803,7 +802,12 @@
         }
 
         function deleteHistoryItem(id) {
-            if(!confirm("確定要刪除這筆紀錄嗎？")) return;
+            // 第一次確認
+            if(!confirm("確定要刪除這筆作答紀錄嗎？")) return;
+            
+            // 第二次確認
+            if(!confirm("⚠️ 警告：刪除後無法復原！\n您真的確定要刪除嗎？")) return;
+
             let history = JSON.parse(localStorage.getItem('quizHistory')) || [];
             history = history.filter(r => r.id !== id);
             localStorage.setItem('quizHistory', JSON.stringify(history));
@@ -820,13 +824,6 @@
             document.getElementById('history-score').innerText = record.score;
             let examQuestions = allQuestions.filter(q => record.questionIds.includes(q.id));
             renderReviewList('history-review-list', examQuestions, record.answers);
-        }
-
-        function clearAllHistory() {
-            if(confirm("確定要刪除 *全部* 歷史紀錄嗎？")) {
-                localStorage.removeItem('quizHistory');
-                showHistory();
-            }
         }
     </script>
 </body>
