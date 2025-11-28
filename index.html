@@ -168,10 +168,23 @@
         .card-item:hover { transform: scale(1.05); z-index: 5; }
         .card-img { width: 100%; height: 100%; object-fit: cover; transition: filter 0.3s; }
         
-        /* 鎖定狀態：全黑剪影 */
-        .card-item.locked .card-img { filter: brightness(0); opacity: 0.8; }
-        .card-item.locked { cursor: default; pointer-events: none; }
-
+        /* 鎖定狀態：圖片變灰 + 鎖頭遮罩 */
+        .card-item.locked .card-img {
+            filter: grayscale(80%) opacity(0.6); /* 保持明亮但有區隔 */
+        }
+        .card-item.locked {
+            cursor: default;
+        }
+        
+        /* 鎖頭遮罩層 */
+        .card-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.3); /* 微微白霧感，保持明亮 */
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            color: #555; text-align: center;
+        }
+        .card-lock-icon { font-size: 3em; margin-bottom: 5px; text-shadow: 2px 2px 5px rgba(255,255,255,0.8); }
         .card-label { 
             position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.7);
             color: white; text-align: center; font-size: 0.9em; padding: 5px 0;
@@ -613,7 +626,6 @@
             let gotNewCard = false;
 
             if (!isMistakeMode && isPass) {
-                // 80分以上才算通過，同時獲得卡片
                 if (finalScore >= 80) {
                     let oldScore = progress.levelScores[currentLevel];
                     if (oldScore === undefined || oldScore < 80) {
@@ -648,13 +660,27 @@
             const progress = getProgress();
             for (let i = 1; i <= LEVEL_CONFIG.length; i++) {
                 let bestScore = progress.levelScores[i];
+                // 門檻：80分才解鎖
                 let isUnlocked = (bestScore !== undefined && bestScore >= 80);
                 let numStr = i < 10 ? `0${i}` : `${i}`;
                 let imgSrc = `images/card_${numStr}.jpg`;
                 let cardItem = document.createElement('div');
-                cardItem.className = isUnlocked ? 'card-item' : 'card-item locked';
-                cardItem.innerHTML = `<img src="${imgSrc}" class="card-img" onerror="this.style.display='none'"><div class="card-label">第 ${i} 關</div>`;
-                if (isUnlocked) cardItem.onclick = () => openCardModal(imgSrc, `第 ${i} 關獎勵`);
+                
+                if (isUnlocked) {
+                    cardItem.className = 'card-item';
+                    cardItem.innerHTML = `<img src="${imgSrc}" class="card-img" onerror="this.style.display='none'">`;
+                    cardItem.onclick = () => openCardModal(imgSrc, `第 ${i} 關獎勵`);
+                } else {
+                    cardItem.className = 'card-item locked';
+                    // 鎖定狀態：顯示圖片(CSS有濾鏡) + 遮罩 + 鎖頭
+                    cardItem.innerHTML = `
+                        <img src="${imgSrc}" class="card-img" onerror="this.style.display='none'">
+                        <div class="card-overlay">
+                            <div class="card-lock-icon">🔒</div>
+                            <div class="card-label">第 ${i} 關</div>
+                        </div>
+                    `;
+                }
                 grid.appendChild(cardItem);
             }
         }
@@ -736,6 +762,12 @@
             document.getElementById('history-score').innerText = record.score;
             let examQuestions = allQuestions.filter(q => record.questionIds.includes(q.id));
             renderReviewList('history-review-list', examQuestions, record.answers);
+        }
+        function clearAllHistory() {
+            if(confirm("確定要刪除 *全部* 歷史紀錄嗎？")) {
+                localStorage.removeItem('quizHistory');
+                showHistory();
+            }
         }
     </script>
 </body>
