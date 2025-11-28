@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌏 社會科大冒險</title>
+    <title>🌏 社會科大冒險 - 闖關版</title>
     <link href="https://fonts.googleapis.com/css2?family=CwTeXYen:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            --primary-color: #FF8C42; /* 溫暖的橘色 */
-            --secondary-color: #F9F871; /* 柔和的黃色 */
-            --bg-color: #FFF5E1; /* 奶油色背景 */
+            --primary-color: #FF8C42; 
+            --secondary-color: #F9F871; 
+            --bg-color: #FFF5E1; 
             --text-color: #4A4A4A;
-            --accent-color: #FF5E5E; /* 點綴的粉紅色 */
+            --accent-color: #FF5E5E; 
             --correct-color: #2ECC71;
             --wrong-color: #E74C3C;
+            --locked-color: #BDC3C7;
         }
 
         body { 
@@ -28,7 +29,7 @@
             background-size: 30px 30px; 
         }
 
-        h1, h2, h3 { color: #D35400; text-align: center; margin-top: 0; }
+        h1, h2 { color: #D35400; text-align: center; margin-top: 0; }
 
         .quiz-container { 
             background: white; 
@@ -38,12 +39,12 @@
             border: 3px solid var(--primary-color);
             position: relative;
             overflow: hidden;
+            min-height: 400px;
         }
 
-        /* 按鈕樣式 */
         .btn {
             background-color: var(--primary-color); color: white; border: none;
-            padding: 12px 24px; font-size: 1.1em; border-radius: 50px;
+            padding: 10px 20px; font-size: 1.1em; border-radius: 50px;
             cursor: pointer; transition: 0.3s; box-shadow: 0 4px 0 #E67E22;
             font-family: inherit; font-weight: bold; margin: 5px; display: inline-block;
         }
@@ -53,10 +54,48 @@
         .btn-red { background-color: var(--accent-color); box-shadow: 0 4px 0 #C0392B; }
         .btn-gray { background-color: #95a5a6; box-shadow: 0 4px 0 #7f8c8d; }
 
-        /* 輸入框 */
         input[type="text"] {
             padding: 10px; font-size: 1.2em; border: 2px solid var(--primary-color);
-            border-radius: 10px; margin: 10px; font-family: inherit; text-align: center;
+            border-radius: 10px; margin: 10px; font-family: inherit; text-align: center; width: 80%;
+        }
+
+        /* 關卡選單樣式 */
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .level-btn {
+            background-color: white;
+            border: 3px solid var(--primary-color);
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: 0.2s;
+            color: var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100px;
+        }
+        .level-btn:hover:not(:disabled) {
+            background-color: #FFF0D4;
+            transform: scale(1.05);
+        }
+        .level-btn:disabled {
+            background-color: #eee;
+            border-color: var(--locked-color);
+            color: var(--locked-color);
+            cursor: not-allowed;
+        }
+        .level-score {
+            font-size: 0.8em;
+            margin-top: 5px;
+            color: var(--correct-color);
+            font-weight: bold;
         }
 
         /* 進度條 */
@@ -67,7 +106,7 @@
             height: 100%; background-color: var(--correct-color); width: 0%; transition: width 0.3s ease;
         }
 
-        /* 題目區域 */
+        /* 題目樣式 */
         .question-box { 
             background-color: #FFF9F0; 
             border-left: 6px solid var(--accent-color);
@@ -80,7 +119,6 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 10px; 
         }
 
-        /* 選項按鈕 */
         .option-btn { 
             width: 100%; padding: 15px; margin: 8px 0; text-align: left; 
             background: white; border: 2px solid #FFE4B5; border-radius: 15px; 
@@ -88,11 +126,10 @@
             font-family: inherit; position: relative;
         }
         .option-btn:hover { background-color: #FFF0D4; border-color: var(--primary-color); }
-        
         .correct { background-color: #D4EDDA !important; border-color: var(--correct-color) !important; color: #155724; }
         .wrong { background-color: #F8D7DA !important; border-color: var(--wrong-color) !important; color: #721C24; }
 
-        /* 解析與複習區 */
+        /* 解析與複習 */
         .explanation-box, .review-item {
             margin-top: 15px; padding: 15px; background-color: #E8F6F3;
             border: 2px dashed #1ABC9C; border-radius: 10px; 
@@ -100,13 +137,11 @@
         }
         .review-list { list-style: none; padding: 0; }
         .review-item { margin-bottom: 20px; background: white; border: 2px solid #eee; }
-        .review-q-text { font-weight: bold; margin-bottom: 10px; color: #333; }
         .tag { padding: 2px 8px; border-radius: 5px; font-size: 0.8em; color: white; margin-right: 5px; }
         .tag-correct { background-color: var(--correct-color); }
         .tag-wrong { background-color: var(--wrong-color); }
 
-        /* 歷史紀錄列表 */
-        #history-list { list-style: none; padding: 0; }
+        /* 歷史紀錄 */
         #history-list li { 
             background: white; margin: 10px 0; padding: 15px; 
             border-radius: 15px; border: 2px solid #eee; display: flex; 
@@ -120,22 +155,35 @@
         <div id="welcome-screen">
             <h1>🎒 社會科大冒險</h1>
             <div style="font-size: 4em; margin: 20px;">🌏✨🇯🇵🇰🇷</div>
-            
-            <input type="text" id="username" placeholder="請輸入你的名字" />
+            <p>請輸入你的名字來開始冒險！</p>
+            <input type="text" id="username" placeholder="你的名字是..." />
             <br>
-            <div style="margin: 20px;">
-                <button class="btn" onclick="startQuiz('normal')">🚀 開始挑戰 (全50題)</button>
+            <button class="btn" onclick="goToLevelScreen()">👉 進入關卡地圖</button>
+        </div>
+
+        <div id="level-screen" style="display: none; text-align: center;">
+            <h2>🗺️ 選擇關卡</h2>
+            <p>嗨，<span id="display-name" style="color:var(--primary-color); font-weight:bold;"></span>！準備好挑戰哪一關？</p>
+            <div id="level-grid" class="level-grid"></div>
+            
+            <div style="margin-top: 20px;">
                 <button id="btn-mistake" class="btn btn-red" onclick="startQuiz('mistake')" style="display:none;">📕 挑戰錯題本 (<span id="mistake-count">0</span>)</button>
+                <button class="btn btn-green" onclick="showHistory()">📜 查看紀錄</button>
+                <button class="btn btn-gray" onclick="logout()">🚪 登出</button>
             </div>
-            <button class="btn btn-green" onclick="showHistory()">📜 查看歷史紀錄</button>
         </div>
 
         <div id="quiz-content" style="display: none;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 id="level-title" style="margin:0;">第 X 關</h3>
+                <button class="btn btn-gray" style="padding:5px 10px; font-size:0.9em;" onclick="exitQuiz()">🏠 放棄返回</button>
+            </div>
+            
             <div class="progress-container">
                 <div id="progress-bar" class="progress-bar"></div>
             </div>
             <div style="text-align: right; font-size: 0.9em; color: gray;">
-                題號: <span id="current-q-num">1</span> / <span id="total-q-num">50</span>
+                題號: <span id="current-q-num">1</span> / <span id="total-q-num">30</span>
             </div>
 
             <div class="question-box">
@@ -152,30 +200,30 @@
         </div>
 
         <div id="score-box" style="display: none; text-align: center;">
-            <h2>🎉 測驗結束！</h2>
-            <p style="font-size: 1.5em;">參賽者：<span id="final-name" style="color: var(--primary-color); font-weight: bold;"></span></p>
+            <h2>🎉 關卡完成！</h2>
             <p style="font-size: 2.5em; margin: 10px 0; font-weight: bold; color: var(--accent-color);"><span id="final-score"></span> 分</p>
             <div id="score-comment" style="font-size: 1.2em; margin-bottom: 20px;"></div>
+            <div id="unlock-msg" style="color: var(--correct-color); font-weight: bold; display:none;">🔓 太棒了！下一關已解鎖！</div>
             
             <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
-                <button class="btn" onclick="location.reload()">🔄 回到首頁</button>
+                <button class="btn" onclick="goToLevelScreen()">🗺️ 回地圖</button>
                 <button class="btn btn-green" onclick="toggleReview()">📝 查看完整解析</button>
             </div>
 
             <div id="full-review-area" style="display: none; margin-top: 30px;">
                 <h3>🔍 試卷回顧</h3>
                 <ul id="review-list" class="review-list"></ul>
-                <button class="btn" onclick="location.reload()">🏠 返回首頁</button>
+                <button class="btn" onclick="goToLevelScreen()">🗺️ 回地圖</button>
             </div>
         </div>
 
         <div id="history-screen" style="display: none;">
             <h2>📜 冒險英雄榜</h2>
             <ul id="history-list"></ul>
-            <button class="btn" onclick="location.reload()">🏠 返回首頁</button>
+            <button class="btn" onclick="goToLevelScreen()">🗺️ 回地圖</button>
             <button class="btn btn-gray" onclick="clearHistory()">🗑️ 清除紀錄</button>
         </div>
-
+        
         <div id="history-detail-screen" style="display: none;">
             <h3>📜 歷史試卷回顧</h3>
             <p>時間：<span id="history-date"></span> | 分數：<span id="history-score"></span></p>
@@ -185,15 +233,18 @@
     </div>
 
     <script>
-        let allQuestions = []; // 原始所有題目
-        let currentQuizQuestions = []; // 當前測驗的題目 (可能是全部，也可能是錯題)
+        // 設定關卡參數：共9關，前8關30題，第9關18題 (共258題)
+        const LEVEL_CONFIG = [30, 30, 30, 30, 30, 30, 30, 30, 18];
+        
+        let allQuestions = [];
+        let currentQuizQuestions = [];
         let currentQuestionIndex = 0;
         let score = 0;
         let userName = "";
-        let userAnswers = {}; // 紀錄使用者這一次的作答 {題號ID: 選項}
-        let isMistakeMode = false; // 是否為錯題模式
+        let currentLevel = 1; // 當前正在進行的關卡
+        let userAnswers = {};
+        let isMistakeMode = false;
         
-        // 音效
         let audioCorrect = new Audio('sounds/correct.mp3'); 
         let audioFail = new Audio('sounds/fail.mp3');
 
@@ -202,49 +253,118 @@
             .then(response => response.json())
             .then(data => {
                 allQuestions = data;
-                updateMistakeButton(); // 檢查有沒有錯題可以考
+                // 讀取上次登入的名字
+                let savedName = localStorage.getItem('quizUserName');
+                if(savedName) {
+                    document.getElementById('username').value = savedName;
+                }
             })
-            .catch(error => {
-                console.error('無法讀取題目:', error);
-                document.querySelector('.quiz-container').innerHTML = "<h2>⚠️ 讀取題庫失敗</h2><p>請確認 questions.json 是否存在。</p>";
-            });
+            .catch(error => console.error('無法讀取題目:', error));
 
-        // 檢查錯題本
-        function getMistakeBank() {
-            return JSON.parse(localStorage.getItem('mistakeBank')) || [];
+        // --- 導航與狀態管理 ---
+
+        function getProgress() {
+            return JSON.parse(localStorage.getItem('quizProgress')) || { maxLevel: 1, levelScores: {} };
         }
 
-        function updateMistakeButton() {
-            let mistakes = getMistakeBank();
-            let btn = document.getElementById('btn-mistake');
-            if (mistakes.length > 0) {
-                btn.style.display = 'inline-block';
-                document.getElementById('mistake-count').innerText = mistakes.length;
-            } else {
-                btn.style.display = 'none';
+        function saveProgress(level, score) {
+            let progress = getProgress();
+            // 紀錄該關最高分
+            if (!progress.levelScores[level] || score > progress.levelScores[level]) {
+                progress.levelScores[level] = score;
             }
+            // 如果及格(60分)且是當前最新關卡，則解鎖下一關
+            if (score >= 60 && level === progress.maxLevel && level < LEVEL_CONFIG.length) {
+                progress.maxLevel++;
+            }
+            localStorage.setItem('quizProgress', JSON.stringify(progress));
         }
 
-        // 開始測驗
-        function startQuiz(mode) {
+        function goToLevelScreen() {
             const inputName = document.getElementById('username').value.trim();
-            if (!inputName) {
-                alert("請先輸入名字喔！🥺");
-                return;
-            }
+            if (!inputName) { alert("請先輸入名字！"); return; }
             userName = inputName;
+            localStorage.setItem('quizUserName', userName); // 記住名字
+
+            document.getElementById('display-name').innerText = userName;
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('score-box').style.display = 'none';
+            document.getElementById('history-screen').style.display = 'none';
+            document.getElementById('quiz-content').style.display = 'none';
+            document.getElementById('level-screen').style.display = 'block';
+
+            renderLevelGrid();
+            updateMistakeButton();
+        }
+
+        function renderLevelGrid() {
+            const grid = document.getElementById('level-grid');
+            grid.innerHTML = "";
+            const progress = getProgress();
+
+            LEVEL_CONFIG.forEach((count, index) => {
+                let levelNum = index + 1;
+                let btn = document.createElement('button');
+                btn.className = 'level-btn';
+                
+                // 判斷是否解鎖
+                if (levelNum <= progress.maxLevel) {
+                    let bestScore = progress.levelScores[levelNum];
+                    let icon = bestScore >= 60 ? '⭐' : '🚩';
+                    let scoreText = bestScore !== undefined ? `<div class="level-score">${bestScore}分</div>` : '<div class="level-score">未挑戰</div>';
+                    
+                    btn.innerHTML = `<div>${icon} 第 ${levelNum} 關</div>${scoreText}`;
+                    btn.onclick = () => startQuiz('level', levelNum);
+                } else {
+                    btn.disabled = true;
+                    btn.innerHTML = `<div>🔒 第 ${levelNum} 關</div><div class="level-score" style="color:gray">鎖定</div>`;
+                }
+                grid.appendChild(btn);
+            });
+        }
+
+        function logout() {
+            localStorage.removeItem('quizUserName');
+            location.reload();
+        }
+
+        function exitQuiz() {
+            if(confirm("確定要放棄目前的進度回到地圖嗎？")) {
+                goToLevelScreen();
+            }
+        }
+
+        // --- 測驗邏輯 ---
+
+        function startQuiz(mode, levelNum) {
             isMistakeMode = (mode === 'mistake');
-            userAnswers = {}; // 重置作答紀錄
+            userAnswers = {};
             score = 0;
             currentQuestionIndex = 0;
 
             if (isMistakeMode) {
-                let mistakeIds = getMistakeBank();
-                // 過濾出錯題本裡的題目
+                let mistakeIds = JSON.parse(localStorage.getItem('mistakeBank')) || [];
                 currentQuizQuestions = allQuestions.filter(q => mistakeIds.includes(q.id));
+                document.getElementById('level-title').innerText = "📕 錯題挑戰";
             } else {
-                // 一般模式：所有題目 (也可以加上隨機排序功能)
-                currentQuizQuestions = [...allQuestions]; 
+                currentLevel = levelNum;
+                // 計算題目範圍
+                // 例如第1關(index 0): 0 ~ 29
+                // 第2關(index 1): 30 ~ 59
+                let startIndex = 0;
+                for (let i = 0; i < levelNum - 1; i++) {
+                    startIndex += LEVEL_CONFIG[i];
+                }
+                let endIndex = startIndex + LEVEL_CONFIG[levelNum - 1];
+                
+                // 為了防止 allQuestions 還沒載入完或題目不足，做個保護
+                if (allQuestions.length < endIndex) {
+                    alert(`題庫載入中或題目不足 (目前題庫數: ${allQuestions.length})，請稍後再試。`);
+                    return;
+                }
+
+                currentQuizQuestions = allQuestions.slice(startIndex, endIndex);
+                document.getElementById('level-title').innerText = `🚩 第 ${levelNum} 關`;
             }
 
             if (currentQuizQuestions.length === 0) {
@@ -252,7 +372,7 @@
                 return;
             }
 
-            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('level-screen').style.display = 'none';
             document.getElementById('quiz-content').style.display = 'block';
             document.getElementById('total-q-num').innerText = currentQuizQuestions.length;
             
@@ -262,17 +382,16 @@
         function loadQuestion() {
             const currentQuestion = currentQuizQuestions[currentQuestionIndex];
             
-            // 更新進度條
+            // 進度條
             let progress = ((currentQuestionIndex) / currentQuizQuestions.length) * 100;
             document.getElementById('progress-bar').style.width = progress + "%";
             document.getElementById('current-q-num').innerText = currentQuestionIndex + 1;
 
-            // 顯示文字
+            // 文字與圖片
             document.getElementById('question-text').innerText = currentQuestion.question;
             document.getElementById('explanation').style.display = 'none'; 
             document.getElementById('next-btn').style.display = 'none';
 
-            // 圖片
             const imgElement = document.getElementById('question-image');
             if (currentQuestion.image) {
                 imgElement.src = currentQuestion.image;
@@ -297,65 +416,38 @@
         }
 
         function checkAnswer(btn, selectedOption, questionData) {
-            // 鎖定所有按鈕
             const buttons = document.querySelectorAll('.option-btn');
             buttons.forEach(button => button.disabled = true); 
 
-            // 紀錄作答 (存入這場考試的紀錄)
             userAnswers[questionData.id] = selectedOption;
-
-            const selectedCode = selectedOption.substring(0, 3); // "(A)"
+            const selectedCode = selectedOption.substring(0, 3);
             const correctCode = questionData.answer.substring(0, 3);
-
             let isCorrect = (selectedCode === correctCode);
             
             if (isCorrect) {
                 btn.classList.add('correct');
                 score++;
                 audioCorrect.play().catch(e => {});
-                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-                
-                // 如果是錯題模式且答對了，從錯題本移除
-                if (isMistakeMode) {
-                    removeFromMistakeBank(questionData.id);
-                }
+                confetti({ particleCount: 50, spread: 50, origin: { y: 0.7 } });
+                if (isMistakeMode) removeFromMistakeBank(questionData.id);
             } else {
                 btn.classList.add('wrong');
                 audioFail.play().catch(e => {});
-                // 標示正確答案
                 buttons.forEach(button => {
                     if (button.innerText.substring(0, 3) === correctCode) {
                         button.classList.add('correct');
                     }
                 });
-                
-                // 不論什麼模式，答錯就加入錯題本 (避免重複加)
                 addToMistakeBank(questionData.id);
             }
 
-            // 顯示解析
             document.getElementById('explanation-text').innerText = questionData.explanation || "暫無解析";
             document.getElementById('explanation').style.display = 'block';
             document.getElementById('next-btn').style.display = 'block';
         }
 
-        // 錯題本操作
-        function addToMistakeBank(id) {
-            let mistakes = getMistakeBank();
-            if (!mistakes.includes(id)) {
-                mistakes.push(id);
-                localStorage.setItem('mistakeBank', JSON.stringify(mistakes));
-            }
-        }
-        function removeFromMistakeBank(id) {
-            let mistakes = getMistakeBank();
-            mistakes = mistakes.filter(mId => mId !== id);
-            localStorage.setItem('mistakeBank', JSON.stringify(mistakes));
-        }
-
         function nextQuestion() {
             currentQuestionIndex++;
-            // 進度條滿
             let progress = ((currentQuestionIndex) / currentQuizQuestions.length) * 100;
             document.getElementById('progress-bar').style.width = progress + "%";
 
@@ -371,98 +463,100 @@
             document.getElementById('score-box').style.display = 'block';
             
             let finalScore = Math.round((score / currentQuizQuestions.length) * 100);
-            if(isNaN(finalScore)) finalScore = 0;
-
-            document.getElementById('final-name').innerText = userName;
             document.getElementById('final-score').innerText = finalScore;
 
-            // 評語
             let comment = "";
-            if(finalScore === 100) comment = "🏆 太神啦！完美無缺！";
-            else if(finalScore >= 80) comment = "🌟 非常優秀！";
-            else if(finalScore >= 60) comment = "👍 及格囉！";
-            else comment = "💪 繼續加油！多複習錯題！";
+            let progress = getProgress();
+            let isPass = finalScore >= 60;
+            
+            if(finalScore === 100) comment = "🏆 完美通關！太強了！";
+            else if(finalScore >= 80) comment = "🌟 優秀！繼續保持！";
+            else if(finalScore >= 60) comment = "👍 恭喜及格！";
+            else comment = "💪 加油！60分才能解鎖下一關喔！";
+            
             document.getElementById('score-comment').innerText = comment;
 
-            if(finalScore >= 60) confetti({ particleCount: 200, spread: 150 });
+            // 判斷解鎖
+            let unlockMsg = document.getElementById('unlock-msg');
+            if (!isMistakeMode && isPass && currentLevel === progress.maxLevel && currentLevel < LEVEL_CONFIG.length) {
+                unlockMsg.style.display = 'block';
+                confetti({ particleCount: 200, spread: 150 });
+            } else {
+                unlockMsg.style.display = 'none';
+            }
 
-            // 儲存紀錄 (若是錯題模式也可存，或選擇不存，這裡選擇存)
-            saveHistory(userName, finalScore, currentQuizQuestions, userAnswers);
-            
-            // 預先生成解析列表
+            if (!isMistakeMode) saveProgress(currentLevel, finalScore);
+            saveHistory(userName, finalScore, currentQuizQuestions, userAnswers, isMistakeMode ? "錯題挑戰" : `第 ${currentLevel} 關`);
             renderReviewList('review-list', currentQuizQuestions, userAnswers);
+        }
+
+        // --- 錯題本 & 歷史紀錄 (與上一版邏輯相同，略為簡化展示) ---
+        function getMistakeBank() { return JSON.parse(localStorage.getItem('mistakeBank')) || []; }
+        function updateMistakeButton() {
+            let mistakes = getMistakeBank();
+            let btn = document.getElementById('btn-mistake');
+            if (mistakes.length > 0) {
+                btn.style.display = 'inline-block';
+                document.getElementById('mistake-count').innerText = mistakes.length;
+            } else {
+                btn.style.display = 'none';
+            }
+        }
+        function addToMistakeBank(id) {
+            let mistakes = getMistakeBank();
+            if (!mistakes.includes(id)) {
+                mistakes.push(id);
+                localStorage.setItem('mistakeBank', JSON.stringify(mistakes));
+            }
+        }
+        function removeFromMistakeBank(id) {
+            let mistakes = getMistakeBank();
+            mistakes = mistakes.filter(mId => mId !== id);
+            localStorage.setItem('mistakeBank', JSON.stringify(mistakes));
         }
 
         function toggleReview() {
             let reviewArea = document.getElementById('full-review-area');
-            if (reviewArea.style.display === 'none') {
-                reviewArea.style.display = 'block';
-                // 滾動到解析區
-                reviewArea.scrollIntoView({ behavior: 'smooth' });
-            } else {
-                reviewArea.style.display = 'none';
-            }
+            reviewArea.style.display = (reviewArea.style.display === 'none') ? 'block' : 'none';
+            if (reviewArea.style.display === 'block') reviewArea.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // 生成解析列表的通用函數
         function renderReviewList(elementId, questionsData, answersData) {
             let list = document.getElementById(elementId);
             list.innerHTML = "";
-            
             questionsData.forEach((q, index) => {
                 let userAns = answersData[q.id];
                 let correctAns = q.answer;
-                // 判斷對錯
                 let isRight = (userAns && userAns.substring(0,3) === correctAns.substring(0,3));
                 let tagClass = isRight ? "tag-correct" : "tag-wrong";
                 let tagText = isRight ? "答對" : "答錯";
                 
                 let html = `
                     <li class="review-item" style="padding:15px; border-radius:10px;">
-                        <div class="review-q-text">
-                            <span class="tag ${tagClass}">${tagText}</span> 
-                            ${index + 1}. ${q.question}
+                        <div style="font-weight:bold; margin-bottom:10px;">
+                            <span class="tag ${tagClass}">${tagText}</span> ${index + 1}. ${q.question}
                         </div>
                 `;
-                
-                if (q.image) {
-                    html += `<img src="${q.image}" style="max-height:150px; display:block; margin:10px 0;">`;
-                }
-
+                if (q.image) html += `<img src="${q.image}" style="max-height:150px; display:block; margin:10px 0;">`;
                 html += `<div style="font-size:0.9em; color:#555;">你的答案：${userAns || "未作答"} <br> 正確答案：<span style="color:#27AE60; font-weight:bold;">${correctAns}</span></div>`;
-                html += `<div style="margin-top:5px; background:#f0f0f0; padding:8px; border-radius:5px; font-size:0.9em;">💡 ${q.explanation || "無解析"}</div>`;
-                html += `</li>`;
+                html += `<div style="margin-top:5px; background:#f0f0f0; padding:8px; border-radius:5px; font-size:0.9em;">💡 ${q.explanation || "無解析"}</div></li>`;
                 list.innerHTML += html;
             });
         }
 
-        // --- 歷史紀錄功能 ---
-        function saveHistory(name, score, questionsData, answersData) {
+        function saveHistory(name, score, questionsData, answersData, modeName) {
             let history = JSON.parse(localStorage.getItem('quizHistory')) || [];
-            let date = new Date().toLocaleString();
-            
-            // 為了節省空間，我們只存題目ID和作答內容，不存整個題目文字
-            // 但為了回放簡單，這裡示範存完整資料的邏輯（若題目不動態變更）
-            // 實務上建議只存 { qId, userAns }，回放時再從 allQuestions 撈
-            
             let record = {
-                id: Date.now(), // 唯一編號
-                name: name,
-                score: score,
-                date: date,
-                mode: isMistakeMode ? "錯題挑戰" : "一般測驗",
-                // 這裡只存作答紀錄 {qId: ans}，回放時再對照
-                answers: answersData,
-                // 存這場考了哪些題目的ID
-                questionIds: questionsData.map(q => q.id) 
+                id: Date.now(), name: name, score: score, date: new Date().toLocaleString(),
+                mode: modeName, answers: answersData, questionIds: questionsData.map(q => q.id)
             };
-            
             history.push(record);
             localStorage.setItem('quizHistory', JSON.stringify(history));
         }
 
         function showHistory() {
             document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('level-screen').style.display = 'none';
             document.getElementById('score-box').style.display = 'none';
             document.getElementById('history-detail-screen').style.display = 'none';
             document.getElementById('history-screen').style.display = 'block';
@@ -470,19 +564,12 @@
             let history = JSON.parse(localStorage.getItem('quizHistory')) || [];
             let list = document.getElementById('history-list');
             list.innerHTML = "";
-            
-            if(history.length === 0) {
-                list.innerHTML = "<li style='justify-content:center'>還沒有人挑戰過喔！</li>";
-            } else {
-                // 顯示最近的 10 筆
-                history.reverse().slice(0, 10).forEach(rec => {
+            if(history.length === 0) list.innerHTML = "<li style='justify-content:center'>暫無紀錄</li>";
+            else {
+                history.reverse().slice(0, 20).forEach(rec => {
                     let li = document.createElement('li');
                     li.innerHTML = `
-                        <div>
-                            <strong>${rec.name}</strong> (${rec.mode}) <br>
-                            <span style="color:${rec.score >= 60 ? '#27AE60' : '#C0392B'}; font-weight:bold;">${rec.score} 分</span>
-                            <br><small style="color:gray">${rec.date}</small>
-                        </div>
+                        <div><strong>${rec.mode}</strong> <br> <span style="color:${rec.score>=60?'#27AE60':'#C0392B'}">${rec.score}分</span> <small style="color:gray">${rec.date}</small></div>
                         <button class="btn" style="font-size:0.9em; padding:5px 10px;" onclick="replayHistory(${rec.id})">回放</button>
                     `;
                     list.appendChild(li);
@@ -494,31 +581,18 @@
             let history = JSON.parse(localStorage.getItem('quizHistory')) || [];
             let record = history.find(r => r.id === recordId);
             if (!record) return;
-
             document.getElementById('history-screen').style.display = 'none';
             document.getElementById('history-detail-screen').style.display = 'block';
-
             document.getElementById('history-date').innerText = record.date;
             document.getElementById('history-score').innerText = record.score;
-
-            // 還原題目資料
-            // 根據紀錄裡的 questionIds 從 allQuestions 找回原始題目資訊
             let examQuestions = allQuestions.filter(q => record.questionIds.includes(q.id));
-            
-            // 若因為改版導致找不到題目(例如題目被刪除)，需做防呆
-            if(examQuestions.length === 0) {
-                 document.getElementById('history-review-list').innerHTML = "<li>原始題目可能已被修改或刪除，無法回放。</li>";
-            } else {
-                 renderReviewList('history-review-list', examQuestions, record.answers);
-            }
+            renderReviewList('history-review-list', examQuestions, record.answers);
         }
 
         function clearHistory() {
-            if(confirm("確定要刪除所有紀錄和錯題本嗎？")) {
-                localStorage.removeItem('quizHistory');
-                localStorage.removeItem('mistakeBank');
-                showHistory();
-                alert("已清除！");
+            if(confirm("確定要刪除所有紀錄嗎？(包含關卡進度)")) {
+                localStorage.clear();
+                location.reload();
             }
         }
     </script>
