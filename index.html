@@ -16,6 +16,7 @@
             --correct-color: #2ECC71;
             --wrong-color: #E74C3C;
             --locked-color: #BDC3C7;
+            --music-btn-color: #3498db; 
         }
 
         body { 
@@ -28,47 +29,10 @@
             background-image: radial-gradient(#FFD166 2px, transparent 2px);
             background-size: 30px 30px; 
             min-height: 100vh;
-            padding-top: 80px; /* 為了避開右上角的音樂控制器 */
         }
 
         h1 { font-size: 2.5em; color: #D35400; text-align: center; margin-top: 0; text-shadow: 2px 2px 0px white; }
         h2, h3 { color: #D35400; text-align: center; }
-
-        /* --- 音樂控制面板 (固定在右上角) --- */
-        .music-panel {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px;
-            border-radius: 15px;
-            border: 2px solid var(--primary-color);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            backdrop-filter: blur(5px);
-        }
-        .music-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 35px;
-            height: 35px;
-            cursor: pointer;
-            font-size: 1.2em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-        }
-        .music-btn:hover { transform: scale(1.1); }
-        .music-info { font-size: 0.9em; font-weight: bold; color: var(--primary-color); display:none;} /* 手機版隱藏曲名以省空間 */
-        @media (min-width: 600px) { .music-info { display: block; } }
-        
-        input[type=range] { width: 80px; accent-color: var(--primary-color); }
 
         /* --- 主要容器 --- */
         .quiz-container { 
@@ -101,7 +65,10 @@
         .btn-green { background-color: var(--correct-color); box-shadow: 0 5px 0 #27AE60; }
         .btn-red { background-color: var(--accent-color); box-shadow: 0 5px 0 #C0392B; }
         .btn-gray { background-color: #95a5a6; box-shadow: 0 5px 0 #7f8c8d; }
-        .btn-sm { padding: 8px 16px; font-size: 1em; margin: 0 2px; box-shadow: 0 3px 0 #bdc3c7;}
+        
+        /* 小按鈕與音樂按鈕樣式 */
+        .btn-sm { padding: 8px 16px; font-size: 1em; margin: 0 2px; box-shadow: 0 3px 0 rgba(0,0,0,0.2); }
+        .btn-music { background-color: var(--music-btn-color); box-shadow: 0 3px 0 #2980b9; }
 
         /* --- 輸入框與快速登入 --- */
         input[type="text"] {
@@ -125,9 +92,26 @@
             font-size: 1.1em;
             transition: 0.2s;
             color: #D35400;
+            display: flex;
+            align-items: center;
+            gap: 8px; /* 名字與垃圾桶的間距 */
         }
         .user-tag:hover { background: var(--primary-color); color: white; }
-        .delete-user { margin-left: 8px; color: #E74C3C; font-weight: bold; cursor: pointer; }
+        
+        /* 垃圾桶圖示樣式 */
+        .delete-user { 
+            font-size: 0.9em; 
+            cursor: pointer; 
+            padding: 2px 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            transition: 0.2s;
+        }
+        .delete-user:hover {
+            background: #E74C3C;
+            color: white;
+            transform: scale(1.2);
+        }
 
         /* --- 關卡地圖樣式 --- */
         #level-screen {
@@ -145,20 +129,17 @@
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 10px; /* 縮小間距讓箭頭更緊密 */
+            gap: 10px;
             margin: 20px 0;
         }
 
-        .level-wrapper {
-            display: flex;
-            align-items: center;
-        }
+        .level-wrapper { display: flex; align-items: center; }
 
         .level-btn {
             background-color: white;
             border: 4px solid var(--primary-color);
             border-radius: 50%;
-            width: 100px; /* 稍微縮小圓圈 */
+            width: 100px;
             height: 100px;
             font-size: 1.1em;
             cursor: pointer;
@@ -180,7 +161,7 @@
         .arrow-icon {
             font-size: 2.5em;
             color: var(--primary-color);
-            margin: 0 -5px; /* 負邊距讓箭頭更靠近圓圈 */
+            margin: 0 -5px;
             text-shadow: 2px 2px 0 white;
             animation: bounce 2s infinite;
             z-index: 1;
@@ -198,12 +179,11 @@
         }
         .question-text { font-size: 1.8em; font-weight: 600; line-height: 1.6; }
         
-        /* 圖片大小調整：適應 iPad */
         .question-img { 
             max-width: 100%; 
-            max-height: 220px; /* 限制高度，避免佔滿版面 */
+            max-height: 220px;
             width: auto;
-            object-fit: contain; /* 保持比例 */
+            object-fit: contain;
             display: block; 
             margin: 15px auto; 
             border: 4px solid white; 
@@ -241,21 +221,27 @@
             border: 2px solid #eee; display: flex; justify-content: space-between; 
             align-items: center; flex-wrap: wrap; font-size: 1.2em;
         }
+        
+        /* 頂部標題列樣式 */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="music-panel">
-        <button class="music-btn" onclick="toggleMusic()" title="播放/暫停">⏯️</button>
-        <button class="music-btn" onclick="nextTrack()" title="下一首">⏭️</button>
-        <span id="music-status" class="music-info">BGM Off</span>
-        <input type="range" id="volume-control" min="0" max="1" step="0.1" value="0.3" title="音量">
-    </div>
-
-    <audio id="bgm-player"></audio>
-
     <div class="quiz-container">
-        
+        <audio id="bgm-player"></audio>
+
         <div id="welcome-screen" class="fade-in">
             <h1>地理第3冊 東北亞的自然環境</h1>
             <div style="font-size: 5em; margin: 30px;">🌏✨🇯🇵🇰🇷</div>
@@ -276,17 +262,29 @@
             
             <div id="level-path" class="level-path"></div>
             
-            <div style="margin-top: 20px; background: rgba(255,255,255,0.9); padding:10px; border-radius:15px;">
+            <div style="margin-top: 20px; background: rgba(255,255,255,0.9); padding:10px; border-radius:15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
                 <button id="btn-mistake" class="btn btn-red" onclick="startQuiz('mistake')" style="display:none;">📕 挑戰錯題本 (<span id="mistake-count">0</span>)</button>
                 <button class="btn btn-green" onclick="showHistory()">📜 查看紀錄</button>
+                
+                <div style="display:inline-flex; gap:5px; align-items:center; background:#eee; padding:5px; border-radius:30px;">
+                    <button class="btn btn-sm btn-music" onclick="toggleMusic()" title="播放/暫停">⏯️</button>
+                    <button class="btn btn-sm btn-music" onclick="nextTrack()" title="下一首">⏭️</button>
+                </div>
+
                 <button class="btn btn-gray" onclick="logout()">🚪 登出</button>
             </div>
         </div>
 
         <div id="quiz-content" style="display: none;" class="fade-in">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="quiz-header">
                 <h3 id="level-title" style="margin:0; font-size: 1.5em;">第 X 關</h3>
-                <button class="btn btn-gray btn-sm" onclick="exitQuiz()">🏠 返回探險地圖</button>
+                
+                <div class="header-controls">
+                    <button class="btn btn-sm btn-music" style="margin:0;" onclick="toggleMusic()" title="播放/暫停">⏯️</button>
+                    <button class="btn btn-sm btn-music" style="margin:0;" onclick="nextTrack()" title="下一首">⏭️</button>
+                    
+                    <button class="btn btn-gray btn-sm" style="margin:0;" onclick="exitQuiz()">🏠 返回探險地圖</button>
+                </div>
             </div>
             
             <div class="progress-container">
@@ -319,14 +317,14 @@
             <div id="unlock-msg" style="color: var(--correct-color); font-weight: bold; display:none; margin-bottom: 15px; font-size: 1.5em;">🔓 太棒了！下一關已解鎖！</div>
             
             <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-                <button class="btn" onclick="goToLevelScreen()">🗺️ 回地圖</button>
+                <button class="btn" onclick="goToLevelScreen()">🗺️ 返回探險地圖</button>
                 <button class="btn btn-green" onclick="toggleReview()">📝 查看完整解析</button>
             </div>
 
             <div id="full-review-area" style="display: none; margin-top: 40px;">
                 <h3>🔍 試卷回顧</h3>
                 <ul id="review-list" class="review-list"></ul>
-                <button class="btn" onclick="goToLevelScreen()">🗺️ 回地圖</button>
+                <button class="btn" onclick="goToLevelScreen()">🗺️ 返回探險地圖</button>
             </div>
         </div>
 
@@ -334,7 +332,7 @@
             <h2>📜 冒險英雄榜</h2>
             <ul id="history-list"></ul>
             <div style="margin-top: 30px;">
-                <button class="btn" onclick="goToLevelScreen()">🗺️ 回地圖</button>
+                <button class="btn" onclick="goToLevelScreen()">🗺️ 返回探險地圖</button>
                 <button class="btn btn-gray" onclick="clearAllHistory()">🔥 清除全部</button>
             </div>
         </div>
@@ -378,10 +376,7 @@
         
         // 背景音樂控制器
         const bgmPlayer = document.getElementById('bgm-player');
-        const volumeControl = document.getElementById('volume-control');
-        const musicStatus = document.getElementById('music-status');
-
-        bgmPlayer.volume = 0.3; // 預設音量
+        bgmPlayer.volume = 0.3; // 預設固定音量
         bgmPlayer.onended = nextTrack; // 播完自動下一首
 
         // 音樂功能函式
@@ -390,10 +385,8 @@
             bgmPlayer.src = PLAYLIST[currentTrackIndex];
             bgmPlayer.play().then(() => {
                 isPlaying = true;
-                musicStatus.innerText = `♪ Playing: Track ${currentTrackIndex + 1}`;
             }).catch(e => {
                 console.log("Auto-play blocked", e);
-                musicStatus.innerText = "Click to Play";
             });
         }
 
@@ -402,11 +395,9 @@
                 if(!bgmPlayer.src) bgmPlayer.src = PLAYLIST[currentTrackIndex];
                 bgmPlayer.play();
                 isPlaying = true;
-                musicStatus.innerText = `♪ Playing: Track ${currentTrackIndex + 1}`;
             } else {
                 bgmPlayer.pause();
                 isPlaying = false;
-                musicStatus.innerText = "Paused";
             }
         }
 
@@ -414,10 +405,6 @@
             currentTrackIndex = (currentTrackIndex + 1) % PLAYLIST.length;
             playMusic();
         }
-
-        volumeControl.addEventListener('input', (e) => {
-            bgmPlayer.volume = e.target.value;
-        });
 
         // 初始載入
         fetch('questions.json')
@@ -441,9 +428,12 @@
                 container.innerHTML = '<div style="width:100%; text-align:center; color:#666; font-size:0.9em; margin-bottom:5px;">快速登入</div>';
                 users.forEach(name => {
                     let div = document.createElement('div');
+                    // 注意這裡使用了 stopPropagation 防止點擊垃圾桶時觸發登入
                     div.innerHTML = `
-                        <span class="user-tag" onclick="quickLogin('${name}')">${name}</span>
-                        <span class="delete-user" onclick="deleteUser('${name}')">×</span>
+                        <span class="user-tag" onclick="quickLogin('${name}')">
+                            ${name}
+                            <span class="delete-user" onclick="event.stopPropagation(); deleteUser('${name}')">🗑️</span>
+                        </span>
                     `;
                     container.appendChild(div);
                 });
@@ -456,6 +446,12 @@
         }
 
         function deleteUser(name) {
+            // 第一次確認
+            if (!confirm(`確定要刪除「${name}」的登入紀錄嗎？`)) return;
+            
+            // 第二次確認
+            if (!confirm(`⚠️ 警告：刪除後無法復原！\n您真的確定要刪除「${name}」嗎？`)) return;
+
             let users = getSavedUsers();
             users = users.filter(u => u !== name);
             localStorage.setItem('savedUsers', JSON.stringify(users));
