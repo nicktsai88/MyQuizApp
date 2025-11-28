@@ -94,11 +94,10 @@
             color: #D35400;
             display: flex;
             align-items: center;
-            gap: 8px; /* 名字與垃圾桶的間距 */
+            gap: 8px; 
         }
         .user-tag:hover { background: var(--primary-color); color: white; }
         
-        /* 垃圾桶圖示樣式 */
         .delete-user { 
             font-size: 0.9em; 
             cursor: pointer; 
@@ -113,7 +112,7 @@
             transform: scale(1.2);
         }
 
-        /* --- 關卡地圖樣式 --- */
+        /* --- 關卡地圖樣式 (S型核心 CSS) --- */
         #level-screen {
             background-image: url('images/map_bg.jpg'); 
             background-size: cover;
@@ -124,16 +123,33 @@
             min-height: 400px;
         }
 
-        .level-path {
+        /* 地圖容器：垂直排列每一列 */
+        .level-map-container {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             gap: 10px;
             margin: 20px 0;
         }
 
-        .level-wrapper { display: flex; align-items: center; }
+        /* 每一列的容器 (Row) */
+        .level-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px; /* 關卡間的距離 */
+        }
+
+        /* 偶數列反轉 (由右向左排) */
+        .level-row.reverse {
+            flex-direction: row-reverse;
+        }
+
+        /* 關卡按鈕外框 (包含按鈕和旁邊的箭頭) */
+        .level-wrapper {
+            display: flex;
+            align-items: center;
+        }
 
         .level-btn {
             background-color: white;
@@ -158,18 +174,76 @@
         .level-btn:disabled { background-color: #e0e0e0; border-color: var(--locked-color); color: var(--locked-color); cursor: not-allowed; }
         .level-score { font-size: 0.8em; color: var(--correct-color); font-weight: bold; }
 
+        /* 箭頭樣式 */
         .arrow-icon {
             font-size: 2.5em;
             color: var(--primary-color);
-            margin: 0 -5px;
+            margin: 0 5px;
             text-shadow: 2px 2px 0 white;
-            animation: bounce 2s infinite;
             z-index: 1;
+            display: block;
         }
-        @keyframes bounce {
-            0%, 100% { transform: translateX(0); }
-            50% { transform: translateX(5px); }
+        /* 橫向箭頭動畫 */
+        .arrow-right { animation: bounceRight 2s infinite; }
+        .arrow-left { animation: bounceLeft 2s infinite; transform: scaleX(-1); } /* 鏡像翻轉 */
+        .arrow-down { animation: bounceDown 2s infinite; font-size: 3em; line-height: 0.5; margin: -5px 0; }
+
+        @keyframes bounceRight { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(5px); } }
+        @keyframes bounceLeft { 0%, 100% { transform: translateX(0) scaleX(-1); } 50% { transform: translateX(-5px) scaleX(-1); } }
+        @keyframes bounceDown { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+
+        /* 連接不同列的向下箭頭容器 */
+        .row-connector {
+            width: 100%;
+            display: flex;
+            height: 40px;
+            align-items: center;
+            /* 預設靠右 (第1列連第2列) */
+            justify-content: flex-end; 
+            padding-right: 50px; /* 對齊關卡圓圈中心 */
+            box-sizing: border-box;
         }
+        /* 偶數列連奇數列 (靠左) */
+        .row-connector.left {
+            justify-content: flex-start;
+            padding-left: 50px;
+            padding-right: 0;
+        }
+
+        /* --- 手機版響應式設計 (Mobile) --- */
+        @media (max-width: 600px) {
+            /* 手機版強制垂直排列 */
+            .level-row, .level-row.reverse {
+                flex-direction: column;
+                gap: 0;
+            }
+            .level-wrapper {
+                flex-direction: column;
+            }
+            /* 手機版箭頭統一向下 */
+            .arrow-icon {
+                transform: none;
+                animation: bounceDown 2s infinite;
+                content: '⬇'; /* 強制顯示為向下箭頭 */
+                margin: 5px 0;
+            }
+            /* 手機版隱藏列連接器 (因為已經變單一直列了) */
+            .row-connector { display: none; }
+            /* 隱藏橫向箭頭，改用偽元素顯示向下箭頭 */
+            .arrow-right, .arrow-left { display: none; }
+            .level-wrapper::after {
+                content: '⬇';
+                font-size: 2.5em;
+                color: var(--primary-color);
+                text-shadow: 2px 2px 0 white;
+                animation: bounceDown 2s infinite;
+                display: block;
+                margin: 5px 0;
+            }
+            /* 最後一個關卡不要箭頭 */
+            .level-wrapper:last-child::after { display: none; }
+        }
+
 
         /* --- 題目樣式 --- */
         .question-box { 
@@ -260,7 +334,7 @@
                 <p style="font-size: 1.2em; margin:5px;">冒險家：<span id="display-name" style="color:var(--primary-color); font-weight:bold;"></span></p>
             </div>
             
-            <div id="level-path" class="level-path"></div>
+            <div id="level-map" class="level-map-container"></div>
             
             <div style="margin-top: 20px; background: rgba(255,255,255,0.9); padding:10px; border-radius:15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
                 <button id="btn-mistake" class="btn btn-red" onclick="startQuiz('mistake')" style="display:none;">📕 挑戰錯題本 (<span id="mistake-count">0</span>)</button>
@@ -347,6 +421,7 @@
     <script>
         // 設定關卡參數
         const LEVEL_CONFIG = [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 18];
+        const ITEMS_PER_ROW = 4;
         
         // --- 音樂播放清單設定 ---
         const PLAYLIST = [
@@ -427,7 +502,6 @@
                 container.innerHTML = '<div style="width:100%; text-align:center; color:#666; font-size:0.9em; margin-bottom:5px;">快速登入</div>';
                 users.forEach(name => {
                     let div = document.createElement('div');
-                    // 注意這裡使用了 stopPropagation 防止點擊垃圾桶時觸發登入
                     div.innerHTML = `
                         <span class="user-tag" onclick="quickLogin('${name}')">
                             ${name}
@@ -445,10 +519,7 @@
         }
 
         function deleteUser(name) {
-            // 第一次確認
             if (!confirm(`確定要刪除「${name}」的登入紀錄嗎？`)) return;
-            
-            // 第二次確認
             if (!confirm(`⚠️ 警告：刪除後無法復原！\n您真的確定要刪除「${name}」嗎？`)) return;
 
             let users = getSavedUsers();
@@ -463,16 +534,13 @@
             userName = inputName;
             localStorage.setItem('quizUserName', userName);
 
-            // 儲存新使用者
             let users = getSavedUsers();
             if(!users.includes(userName)) {
                 users.push(userName);
                 localStorage.setItem('savedUsers', JSON.stringify(users));
             }
 
-            // 嘗試播放音樂
             if (!isPlaying) playMusic();
-
             goToLevelScreen();
         }
 
@@ -500,49 +568,96 @@
             document.getElementById('quiz-content').style.display = 'none';
             document.getElementById('level-screen').style.display = 'block';
 
-            renderLevelPath();
+            renderLevelMap();
             updateMistakeButton();
         }
 
-        function renderLevelPath() {
-            const container = document.getElementById('level-path');
+        // --- 核心：S型地圖生成邏輯 ---
+        function renderLevelMap() {
+            const container = document.getElementById('level-map');
             container.innerHTML = "";
             const progress = getProgress();
 
-            LEVEL_CONFIG.forEach((count, index) => {
-                let levelNum = index + 1;
-                let wrapper = document.createElement('div');
-                wrapper.className = 'level-wrapper';
+            // 將關卡分組，每組 4 個
+            let rows = [];
+            for (let i = 0; i < LEVEL_CONFIG.length; i += ITEMS_PER_ROW) {
+                rows.push(LEVEL_CONFIG.slice(i, i + ITEMS_PER_ROW));
+            }
 
-                let btn = document.createElement('button');
-                btn.className = 'level-btn';
-                
-                if (levelNum <= progress.maxLevel) {
-                    let bestScore = progress.levelScores[levelNum];
-                    let icon = bestScore >= 60 ? '🚩' : '🏳️';
-                    if (bestScore === 100) icon = '👑';
-                    else if (bestScore >= 80) icon = '⭐';
+            rows.forEach((rowItems, rowIndex) => {
+                let rowDiv = document.createElement('div');
+                rowDiv.className = 'level-row';
+                // 偶數行 (0, 2, 4...) 是正常順序，奇數行 (1, 3...) 是反轉順序
+                let isReverse = (rowIndex % 2 !== 0);
+                if (isReverse) rowDiv.classList.add('reverse');
 
-                    let scoreText = bestScore !== undefined ? `<div class="level-score">${bestScore}分</div>` : '<div class="level-score">GO!</div>';
+                // 該行起始的關卡編號 (1-based)
+                let startLevelNum = rowIndex * ITEMS_PER_ROW + 1;
+
+                // 產生該行的關卡按鈕
+                rowItems.forEach((_, itemIndex) => {
+                    let levelNum = startLevelNum + itemIndex;
+                    let wrapper = document.createElement('div');
+                    wrapper.className = 'level-wrapper';
+
+                    // 1. 產生按鈕
+                    let btn = document.createElement('button');
+                    btn.className = 'level-btn';
+                    if (levelNum <= progress.maxLevel) {
+                        let bestScore = progress.levelScores[levelNum];
+                        let icon = bestScore >= 60 ? '🚩' : '🏳️';
+                        if (bestScore === 100) icon = '👑';
+                        else if (bestScore >= 80) icon = '⭐';
+                        let scoreText = bestScore !== undefined ? `<div class="level-score">${bestScore}分</div>` : '<div class="level-score">GO!</div>';
+                        btn.innerHTML = `<div class="level-title">${icon} 第 ${levelNum} 關</div>${scoreText}`;
+                        btn.onclick = () => startQuiz('level', levelNum);
+                    } else {
+                        btn.disabled = true;
+                        btn.innerHTML = `<div class="level-title">🔒 第 ${levelNum} 關</div><div class="level-score" style="color:gray">鎖定</div>`;
+                    }
+                    wrapper.appendChild(btn);
+
+                    // 2. 產生橫向連接箭頭 (如果不是該行最後一個)
+                    if (itemIndex < rowItems.length - 1) {
+                        let arrow = document.createElement('div');
+                        arrow.className = 'arrow-icon';
+                        // 根據行的方向決定箭頭方向
+                        if (isReverse) {
+                            arrow.innerHTML = '➜'; // 原本是右，透過 CSS .arrow-left 翻轉為左
+                            arrow.classList.add('arrow-left');
+                        } else {
+                            arrow.innerText = '➜';
+                            arrow.classList.add('arrow-right');
+                        }
+                        wrapper.appendChild(arrow);
+                    }
+
+                    rowDiv.appendChild(wrapper);
+                });
+
+                container.appendChild(rowDiv);
+
+                // 3. 產生行與行之間的連接器 (向下箭頭)
+                // 如果不是最後一行，且下一行還有關卡
+                if (rowIndex < rows.length - 1) {
+                    let connectorDiv = document.createElement('div');
+                    connectorDiv.className = 'row-connector';
+                    let downArrow = document.createElement('div');
+                    downArrow.className = 'arrow-icon arrow-down';
+                    downArrow.innerText = '⬇';
                     
-                    btn.innerHTML = `<div class="level-title">${icon} 第 ${levelNum} 關</div>${scoreText}`;
-                    btn.onclick = () => startQuiz('level', levelNum);
-                } else {
-                    btn.disabled = true;
-                    btn.innerHTML = `<div class="level-title">🔒 第 ${levelNum} 關</div><div class="level-score" style="color:gray">鎖定</div>`;
+                    // 決定箭頭靠左還是靠右
+                    // 奇數行(Index 0)結束 -> 偶數行(Index 1)開始：箭頭在右側
+                    // 偶數行(Index 1)結束 -> 奇數行(Index 2)開始：箭頭在左側
+                    if (isReverse) {
+                        connectorDiv.classList.add('left'); // 靠左
+                    } else {
+                        // 預設靠右
+                    }
+                    
+                    connectorDiv.appendChild(downArrow);
+                    container.appendChild(connectorDiv);
                 }
-                
-                wrapper.appendChild(btn);
-
-                // 箭頭連接
-                if (index < LEVEL_CONFIG.length - 1) {
-                    let arrow = document.createElement('div');
-                    arrow.className = 'arrow-icon';
-                    arrow.innerText = '➔'; 
-                    wrapper.appendChild(arrow);
-                }
-
-                container.appendChild(wrapper);
             });
         }
 
@@ -557,7 +672,7 @@
             }
         }
 
-        // --- 測驗邏輯 ---
+        // --- 測驗邏輯 (不變) ---
         function startQuiz(mode, levelNum) {
             isMistakeMode = (mode === 'mistake');
             userAnswers = {};
@@ -596,11 +711,9 @@
 
         function loadQuestion() {
             const currentQuestion = currentQuizQuestions[currentQuestionIndex];
-            
-            // 觸發轉場動畫
             let qContainer = document.getElementById('question-container');
             qContainer.classList.remove('fade-in');
-            void qContainer.offsetWidth; // trigger reflow
+            void qContainer.offsetWidth;
             qContainer.classList.add('fade-in');
 
             let progress = ((currentQuestionIndex) / currentQuizQuestions.length) * 100;
@@ -708,7 +821,7 @@
             renderReviewList('review-list', currentQuizQuestions, userAnswers);
         }
 
-        // --- 錯題本與歷史紀錄 ---
+        // --- 錯題本與歷史紀錄 (相同) ---
         function getMistakeBank() { return JSON.parse(localStorage.getItem('mistakeBank')) || []; }
         function updateMistakeButton() {
             let mistakes = getMistakeBank();
@@ -802,12 +915,8 @@
         }
 
         function deleteHistoryItem(id) {
-            // 第一次確認
             if(!confirm("確定要刪除這筆作答紀錄嗎？")) return;
-            
-            // 第二次確認
             if(!confirm("⚠️ 警告：刪除後無法復原！\n您真的確定要刪除嗎？")) return;
-
             let history = JSON.parse(localStorage.getItem('quizHistory')) || [];
             history = history.filter(r => r.id !== id);
             localStorage.setItem('quizHistory', JSON.stringify(history));
@@ -824,6 +933,13 @@
             document.getElementById('history-score').innerText = record.score;
             let examQuestions = allQuestions.filter(q => record.questionIds.includes(q.id));
             renderReviewList('history-review-list', examQuestions, record.answers);
+        }
+
+        function clearAllHistory() {
+            if(confirm("確定要刪除 *全部* 歷史紀錄嗎？")) {
+                localStorage.removeItem('quizHistory');
+                showHistory();
+            }
         }
     </script>
 </body>
