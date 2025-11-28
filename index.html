@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社會科互動測驗</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f4f4f9; }
+        .quiz-container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #333; }
+        .question-box { margin-bottom: 20px; padding: 15px; border-left: 5px solid #007bff; background-color: #f9f9f9; }
+        .question-text { font-size: 1.2em; font-weight: bold; margin-bottom: 10px; }
+        .question-img { max-width: 100%; max-height: 300px; display: block; margin: 10px auto; border: 1px solid #ddd; border-radius: 5px; }
+        .options-list { list-style: none; padding: 0; }
+        .options-list li { margin: 10px 0; }
+        .option-btn { width: 100%; padding: 10px; text-align: left; background: #fff; border: 2px solid #ddd; border-radius: 5px; cursor: pointer; transition: 0.2s; font-size: 1em; }
+        .option-btn:hover { background-color: #eef; border-color: #007bff; }
+        .correct { background-color: #d4edda !important; border-color: #28a745 !important; }
+        .wrong { background-color: #f8d7da !important; border-color: #dc3545 !important; }
+        #next-btn { display: none; width: 100%; padding: 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; font-size: 1.2em; cursor: pointer; margin-top: 20px; }
+        #next-btn:hover { background-color: #0056b3; }
+        #score-box { text-align: center; font-size: 1.5em; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <h1>🌏 社會科互動測驗</h1>
+        <div id="quiz-content">
+            <div id="progress">題目: <span id="current-q">1</span> / <span id="total-q">5</span></div>
+            <div class="question-box">
+                <div id="question-text" class="question-text">載入中...</div>
+                <img id="question-image" class="question-img" style="display: none;" />
+            </div>
+            <ul id="options-list" class="options-list"></ul>
+        </div>
+        <div id="score-box">
+            <h2>測驗結束! 🎉</h2>
+            <p>你的得分: <span id="final-score"></span></p>
+            <button onclick="location.reload()" class="option-btn" style="text-align:center; background:#007bff; color:white;">再玩一次</button>
+        </div>
+        <button id="next-btn" onclick="nextQuestion()">下一題</button>
+    </div>
+
+    <script>
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // 讀取 JSON 檔案
+        fetch('questions.json')
+            .then(response => response.json())
+            .then(data => {
+                questions = data;
+                document.getElementById('total-q').innerText = questions.length;
+                loadQuestion();
+            })
+            .catch(error => {
+                document.getElementById('question-text').innerText = "無法讀取題目，請確認 questions.json 檔案是否存在。";
+                console.error('Error:', error);
+            });
+
+        function loadQuestion() {
+            const currentQuestion = questions[currentQuestionIndex];
+            document.getElementById('current-q').innerText = currentQuestionIndex + 1;
+            document.getElementById('question-text').innerText = currentQuestion.question;
+            
+            // 處理圖片顯示邏輯
+            const imgElement = document.getElementById('question-image');
+            if (currentQuestion.image) {
+                imgElement.src = currentQuestion.image;
+                imgElement.style.display = 'block';
+            } else {
+                imgElement.style.display = 'none';
+            }
+
+            const optionsList = document.getElementById('options-list');
+            optionsList.innerHTML = '';
+            document.getElementById('next-btn').style.display = 'none';
+
+            currentQuestion.options.forEach(option => {
+                const li = document.createElement('li');
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.innerText = option;
+                button.onclick = () => checkAnswer(button, option, currentQuestion.answer);
+                li.appendChild(button);
+                optionsList.appendChild(li);
+            });
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(button => button.disabled = true); // 鎖定所有按鈕
+
+            // 比對答案（這裡只比對選項的第一個字母，例如 "(A)"）
+            const selectedCode = selected.substring(0, 3);
+            const correctCode = correct.substring(0, 3);
+
+            if (selectedCode === correctCode) {
+                btn.classList.add('correct');
+                score++;
+            } else {
+                btn.classList.add('wrong');
+                // 顯示正確答案
+                buttons.forEach(button => {
+                    if (button.innerText.substring(0, 3) === correctCode) {
+                        button.classList.add('correct');
+                    }
+                });
+            }
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showScore();
+            }
+        }
+
+        function showScore() {
+            document.getElementById('quiz-content').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('score-box').style.display = 'block';
+            document.getElementById('final-score').innerText = `${score} / ${questions.length}`;
+        }
+    </script>
+</body>
+</html>
