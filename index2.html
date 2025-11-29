@@ -67,7 +67,6 @@
         .btn-gray { background-color: #95a5a6; box-shadow: 0 5px 0 #7f8c8d; }
         .btn-blue { background-color: #3498db; box-shadow: 0 5px 0 #2980b9; }
         
-        /* 小按鈕與音樂按鈕樣式 */
         .btn-sm { padding: 8px 16px; font-size: 1em; margin: 0 2px; box-shadow: 0 3px 0 rgba(0,0,0,0.2); }
         .btn-music { background-color: var(--music-btn-color); box-shadow: 0 3px 0 #2980b9; }
 
@@ -78,41 +77,19 @@
             border-radius: 15px; margin: 15px; font-family: inherit; text-align: center; width: 80%;
         }
         .quick-login-area {
-            margin-top: 15px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
+            margin-top: 15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
         }
         .user-tag {
-            background: #FFF0D4;
-            border: 2px solid var(--primary-color);
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 1.1em;
-            transition: 0.2s;
-            color: #D35400;
-            display: flex;
-            align-items: center;
-            gap: 8px; /* 名字與垃圾桶的間距 */
+            background: #FFF0D4; border: 2px solid var(--primary-color); padding: 8px 15px;
+            border-radius: 20px; cursor: pointer; font-size: 1.1em; transition: 0.2s;
+            color: #D35400; display: flex; align-items: center; gap: 8px;
         }
         .user-tag:hover { background: var(--primary-color); color: white; }
-        
-        /* 垃圾桶圖示樣式 */
         .delete-user { 
-            font-size: 0.9em; 
-            cursor: pointer; 
-            padding: 2px 6px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.5);
-            transition: 0.2s;
+            font-size: 0.9em; cursor: pointer; padding: 2px 6px;
+            border-radius: 50%; background: rgba(255,255,255,0.5); transition: 0.2s;
         }
-        .delete-user:hover {
-            background: #E74C3C;
-            color: white;
-            transform: scale(1.2);
-        }
+        .delete-user:hover { background: #E74C3C; color: white; transform: scale(1.2); }
 
         /* --- 角色選擇區樣式 --- */
         .avatar-selection { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
@@ -128,15 +105,10 @@
 
         /* --- 關卡地圖樣式 --- */
         #level-screen {
-            background-image: url('images/map_bg.jpg'); 
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            border-radius: 15px;
-            padding: 20px;
-            min-height: 400px;
+            background-image: url('images/map_bg.jpg'); background-size: cover;
+            background-position: center; background-repeat: no-repeat;
+            border-radius: 15px; padding: 20px; min-height: 400px;
         }
-
         .level-map-container { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 20px 0; }
         .level-row { display: flex; justify-content: center; align-items: center; gap: 15px; }
         .level-row.reverse { flex-direction: row-reverse; }
@@ -155,20 +127,10 @@
 
         .level-btn {
             background-color: white; border: 4px solid var(--primary-color);
-            border-radius: 50%;
-            width: 100px;
-            height: 100px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: 0.2s;
-            color: var(--primary-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-            position: relative;
-            z-index: 2;
+            border-radius: 50%; width: 100px; height: 100px; font-size: 1.1em;
+            cursor: pointer; transition: 0.2s; color: var(--primary-color);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2); position: relative; z-index: 2;
         }
         .level-title { white-space: nowrap; font-weight: bold; margin-bottom: 5px; }
         .level-btn:hover:not(:disabled) { background-color: #FFF0D4; transform: scale(1.1) rotate(3deg); }
@@ -206,15 +168,10 @@
         .card-item:hover { transform: scale(1.05); z-index: 5; }
         .card-img { width: 100%; height: 100%; object-fit: cover; transition: filter 0.3s; }
         
-        /* 鎖定狀態：圖片變灰 + 鎖頭遮罩 */
-        .card-item.locked .card-img {
-            filter: grayscale(80%) opacity(0.6); 
-        }
-        .card-item.locked {
-            cursor: default;
-        }
+        /* 鎖定狀態 */
+        .card-item.locked .card-img { filter: grayscale(80%) opacity(0.6); }
+        .card-item.locked { cursor: default; }
         
-        /* 鎖頭遮罩層 */
         .card-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(255, 255, 255, 0.3);
@@ -228,7 +185,6 @@
             color: white; text-align: center; font-size: 0.9em; padding: 5px 0;
         }
 
-        /* 彈窗樣式 (通用) */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); z-index: 2000; display: none;
@@ -259,26 +215,17 @@
             .map-avatar { top: 20px; left: -60px; transform: none; }
         }
 
-        /* --- 題目樣式 --- */
+        /* --- 題目與其他 --- */
         .question-box { 
-            background-color: #FFF9F0; 
-            border-left: 8px solid var(--accent-color);
+            background-color: #FFF9F0; border-left: 8px solid var(--accent-color);
             padding: 20px; margin-bottom: 20px; border-radius: 15px;
         }
         .question-text { font-size: 1.8em; font-weight: 600; line-height: 1.6; }
-        
         .question-img { 
-            max-width: 100%; 
-            max-height: 220px;
-            width: auto;
-            object-fit: contain;
-            display: block; 
-            margin: 15px auto; 
-            border: 4px solid white; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-            border-radius: 15px; 
+            max-width: 100%; max-height: 220px; width: auto; object-fit: contain;
+            display: block; margin: 15px auto; border: 4px solid white; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 15px; 
         }
-
         .option-btn { 
             width: 100%; padding: 15px; margin: 10px 0; text-align: left; 
             background: white; border: 3px solid #FFE4B5; border-radius: 20px; 
@@ -288,11 +235,8 @@
         .option-btn:hover { background-color: #FFF0D4; border-color: var(--primary-color); }
         .correct { background-color: #D4EDDA !important; border-color: var(--correct-color) !important; color: #155724; }
         .wrong { background-color: #F8D7DA !important; border-color: var(--wrong-color) !important; color: #721C24; }
-
-        /* --- 進度條與其他 --- */
         .progress-container { width: 100%; background-color: #eee; border-radius: 10px; margin: 15px 0; height: 25px; overflow: hidden; }
         .progress-bar { height: 100%; background-color: var(--correct-color); width: 0%; transition: width 0.3s ease; }
-
         .explanation-box, .review-item {
             margin-top: 20px; padding: 20px; background-color: #E8F6F3;
             border: 3px dashed #1ABC9C; border-radius: 15px; 
@@ -309,20 +253,8 @@
             border: 2px solid #eee; display: flex; justify-content: space-between; 
             align-items: center; flex-wrap: wrap; font-size: 1.2em;
         }
-        
-        /* 頂部標題列樣式 */
-        .quiz-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-        .header-controls {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .quiz-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 15px; }
+        .header-controls { display: flex; align-items: center; gap: 8px; }
     </style>
 </head>
 <body>
@@ -332,7 +264,7 @@
 
         <div id="welcome-screen" class="fade-in">
             <h1>地理第3冊 東北亞的自然環境</h1>
-            <div style="font-size: 5em; margin: 30px;">🌏✨🇯🇵🇰🇷</div>
+            <div style="font-size: 4em; margin: 20px;">🌏✨🇯🇵🇰🇷</div>
             <p style="font-size: 1.5em;">請輸入你的名字並選擇一位冒險夥伴！</p>
             <input type="text" id="username" placeholder="你的名字是..." />
             
@@ -345,7 +277,7 @@
 
             <div id="quick-login-area" class="quick-login-area"></div>
 
-            <br><br>
+            <br>
             <button class="btn" onclick="loginAndStart()">👉 進入關卡地圖</button>
         </div>
 
@@ -377,12 +309,10 @@
         <div id="quiz-content" style="display: none;" class="fade-in">
             <div class="quiz-header">
                 <h3 id="level-title" style="margin:0; font-size: 1.5em;">第 X 關</h3>
-                
                 <div class="header-controls">
                     <button class="btn btn-sm btn-music" style="margin:0;" onclick="toggleMusic()" title="播放/暫停">⏯️</button>
                     <button class="btn btn-sm btn-music" style="margin:0;" onclick="nextTrack()" title="下一首">⏭️</button>
-                    
-                    <button class="btn btn-gray btn-sm" style="margin:0;" onclick="exitQuiz()">🏠 回到地圖</button>
+                    <button class="btn btn-gray btn-sm" style="margin:0;" onclick="exitQuiz()">🏠 返回探險地圖</button>
                 </div>
             </div>
             
@@ -413,15 +343,15 @@
             <p style="font-size: 2em; margin: 10px 0; font-weight: bold; color: var(--primary-color);">參賽者：<span id="final-name"></span></p>
             <p style="font-size: 4em; margin: 10px 0; font-weight: bold; color: var(--accent-color);"><span id="final-score"></span> 分</p>
             <div id="score-comment" style="font-size: 1.5em; margin-bottom: 25px;"></div>
-            <div id="unlock-msg" style="color: var(--correct-color); font-weight: bold; display:none; margin-bottom: 15px; font-size: 1.5em;">🔓 下一關已解鎖！</div>
+            <div id="unlock-msg" style="color: var(--correct-color); font-weight: bold; display:none; margin-bottom: 15px; font-size: 1.5em;">🔓 太棒了！下一關已解鎖！</div>
             
-            <div id="new-card-alert" style="display:none; background:#e8f8f5; border:2px solid var(--correct-color); border-radius:15px; padding:10px; margin: 10px 0;">
-                 <h3 style="margin:5px;">✨ 恭喜獲得新卡片！ ✨</h3>
+            <div id="new-card-alert" style="display:none; background:#e8f8f5; border:2px solid var(--correct-color); border-radius:15px; padding:15px; margin: 15px 0; animation: fadeIn 1s;">
+                 <h3 style="margin:5px 0; color:var(--correct-color);">✨ 恭喜獲得新卡片！ ✨</h3>
                  <p style="font-size: 1.2em;">快去「我的圖鑑」看看吧！</p>
             </div>
 
             <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
-                <button class="btn" onclick="goToLevelScreen()">🗺️ 返回地圖</button>
+                <button class="btn" onclick="goToLevelScreen()">🗺️ 返回探險地圖</button>
                 <button class="btn btn-green" onclick="toggleReview()">📝 查看完整解析</button>
             </div>
 
@@ -436,7 +366,7 @@
             <h2>📜 冒險英雄榜</h2>
             <ul id="history-list"></ul>
             <div style="margin-top: 30px;">
-                <button class="btn" onclick="goToLevelScreen()">🗺️ 返回地圖</button>
+                <button class="btn" onclick="goToLevelScreen()">🗺️ 返回探險地圖</button>
             </div>
         </div>
         
@@ -452,7 +382,7 @@
             <p style="text-align:center; color:#666; font-size: 1.2em;">達成 80 分即可解鎖該關卡卡片！</p>
             <div id="collection-grid" class="collection-grid"></div>
             <div style="text-align:center; margin-top:20px;">
-                <button class="btn" onclick="goToLevelScreen()">🗺️ 返回地圖</button>
+                <button class="btn" onclick="goToLevelScreen()">🗺️ 返回探險地圖</button>
             </div>
         </div>
 
@@ -469,7 +399,6 @@
         const LEVEL_CONFIG = [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 18];
         const ITEMS_PER_ROW = 4;
         const PLAYLIST = ['sounds/bgm1.mp3', 'sounds/bgm2.mp3', 'sounds/bgm3.mp3'];
-
         let currentTrackIndex = 0;
         let isPlaying = false;
         
@@ -521,6 +450,7 @@
             });
             loginAndStart();
         }
+        
         function deleteUser(name) {
             if (!confirm(`確定要刪除「${name}」的所有資料嗎？\n(包含登入紀錄、作答歷史、錯題本)`)) return;
             if (!confirm(`⚠️ 警告：刪除後資料完全消失且無法復原！\n您真的確定要刪除「${name}」嗎？`)) return;
@@ -532,8 +462,11 @@
             let users = getSavedUsers();
             users = users.filter(u => (typeof u === 'string' ? u : u.name) !== name);
             localStorage.setItem('savedUsers', JSON.stringify(users));
+
             renderQuickLogin();
+            alert(`已完整清除「${name}」的所有資料。`);
         }
+
         function loginAndStart() {
             const inputName = document.getElementById('username').value.trim();
             if (!inputName) { alert("請先輸入名字！"); return; }
@@ -736,6 +669,7 @@
             const progress = getProgress();
             for (let i = 1; i <= LEVEL_CONFIG.length; i++) {
                 let bestScore = progress.levelScores[i];
+                // 門檻：80分才解鎖
                 let isUnlocked = (bestScore !== undefined && bestScore >= 80);
                 let numStr = i < 10 ? `0${i}` : `${i}`;
                 let imgSrc = `images/card_${numStr}.jpg`;
@@ -836,13 +770,6 @@
             document.getElementById('history-score').innerText = record.score;
             let examQuestions = allQuestions.filter(q => record.questionIds.includes(q.id));
             renderReviewList('history-review-list', examQuestions, record.answers);
-        }
-        
-        function clearAllHistory() {
-            if(confirm("確定要刪除 *全部* 歷史紀錄嗎？")) {
-                localStorage.removeItem('quizHistory');
-                showHistory();
-            }
         }
     </script>
 </body>
