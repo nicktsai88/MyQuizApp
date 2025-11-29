@@ -18,6 +18,7 @@
             --locked-color: #BDC3C7;
             --music-btn-color: #3498db;
             --gold-color: #f1c40f;
+            --purple-color: #9b59b6;
         }
 
         body { 
@@ -44,6 +45,7 @@
         .fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
         .pop-anim { animation: pop 0.3s; }
+        @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(5deg); } 75% { transform: rotate(-5deg); } 100% { transform: rotate(0deg); } }
 
         /* --- 按鈕樣式 --- */
         .btn {
@@ -59,6 +61,7 @@
         .btn-gray { background-color: #95a5a6; box-shadow: 0 5px 0 #7f8c8d; }
         .btn-blue { background-color: #3498db; box-shadow: 0 5px 0 #2980b9; }
         .btn-gold { background-color: var(--gold-color); box-shadow: 0 5px 0 #d4ac0d; color: #fff; text-shadow: 1px 1px 0 #b7950b; }
+        .btn-purple { background-color: var(--purple-color); box-shadow: 0 5px 0 #8e44ad; }
         
         .btn-sm { padding: 6px 12px; font-size: 1em; margin: 0 2px; box-shadow: 0 3px 0 rgba(0,0,0,0.2); }
         .btn-music { background-color: var(--music-btn-color); box-shadow: 0 3px 0 #2980b9; }
@@ -86,19 +89,34 @@
         #level-screen {
             background-image: url('images/map_bg.jpg'); background-size: cover; background-position: center;
             border-radius: 15px; padding: 20px; min-height: 400px; position: relative;
+            overflow: hidden; /* 防止裝飾品溢出 */
         }
-        /* 頂部資訊列 (稱號/金幣) */
+        /* 地圖裝飾品 */
+        .map-decoration {
+            position: absolute; font-size: 2.5em; z-index: 1; cursor: pointer;
+            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));
+            transition: transform 0.2s;
+        }
+        .map-decoration:hover { transform: scale(1.2); }
+        /* 裝飾模式遮罩 */
+        #decoration-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.1); z-index: 5; cursor: crosshair;
+            display: none; border: 4px dashed var(--purple-color); box-sizing: border-box; border-radius: 15px;
+        }
+        
+        /* 頂部資訊列 */
         .status-bar {
             display: flex; justify-content: space-between; align-items: center;
             background: rgba(255,255,255,0.9); padding: 10px 20px; border-radius: 15px; margin-bottom: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; z-index: 20;
         }
         .status-item { display: flex; align-items: center; gap: 10px; font-size: 1.1em; font-weight: bold; color: #555; }
         .rank-img { width: 50px; height: 50px; object-fit: contain; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2)); }
         .coin-icon { width: 30px; height: 30px; vertical-align: middle; }
         
         /* S型地圖 */
-        .level-map-container { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .level-map-container { display: flex; flex-direction: column; align-items: center; gap: 10px; position: relative; z-index: 10; }
         .level-row { display: flex; justify-content: center; align-items: center; gap: 15px; }
         .level-row.reverse { flex-direction: row-reverse; }
         .level-wrapper { display: flex; align-items: center; position: relative; }
@@ -140,9 +158,7 @@
         .timer-bar-container { width: 100%; height: 10px; background: #ddd; border-radius: 5px; overflow: hidden; margin-bottom: 15px; }
         .timer-bar { height: 100%; background: var(--wrong-color); width: 100%; transition: width 1s linear; }
         
-        /* 連擊與金幣特效 */
         .combo-text { position: absolute; top: 50px; right: 20px; font-size: 2em; color: #ffcc00; font-weight: bold; text-shadow: 2px 2px 0 red; transform: rotate(-10deg); animation: pop 0.3s; display: none; z-index: 100; }
-
         .question-box { background-color: #FFF9F0; border-left: 8px solid var(--accent-color); padding: 20px; margin-bottom: 20px; border-radius: 15px; }
         .question-text { font-size: 1.8em; font-weight: 600; line-height: 1.6; }
         .question-img { max-width: 100%; max-height: 220px; width: auto; object-fit: contain; display: block; margin: 15px auto; border-radius: 15px; }
@@ -151,7 +167,6 @@
         .correct { background-color: #D4EDDA !important; border-color: var(--correct-color) !important; }
         .wrong { background-color: #F8D7DA !important; border-color: var(--wrong-color) !important; opacity: 0.6; }
         
-        /* 道具欄 */
         .powerups-bar { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
         .powerup-btn { background: white; border: 2px solid #ccc; border-radius: 15px; width: 70px; height: 70px; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; }
         .powerup-btn img { width: 40px; height: 40px; object-fit: contain; }
@@ -164,20 +179,35 @@
         .modal-content { background: white; padding: 20px; border-radius: 15px; max-width: 90%; max-height: 90%; text-align: center; position: relative; overflow-y: auto; }
         .modal-close { position: absolute; top: 10px; right: 10px; background: #eee; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
 
-        /* 商店項目 */
+        /* 商店與扭蛋 */
         .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
         .shop-item { border: 2px solid #eee; padding: 15px; border-radius: 10px; text-align: center; transition: 0.2s; }
         .shop-item:hover { border-color: var(--gold-color); transform: translateY(-5px); }
         .shop-item img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 10px; }
         .shop-price { color: var(--gold-color); font-weight: bold; font-size: 1.2em; }
         
-        /* 成就項目 */
+        .gacha-box { border: 4px solid var(--purple-color); border-radius: 15px; padding: 20px; background: #f3e5f5; margin-top: 20px; }
+        .gacha-anim { font-size: 5em; animation: shake 0.5s infinite; display:none; }
+        .gacha-result { font-size: 3em; animation: pop 0.5s; display:none; }
+
+        /* 裝飾工具列 */
+        #decoration-toolbar {
+            position: fixed; bottom: 0; left: 0; width: 100%; background: white;
+            padding: 15px; box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+            display: none; z-index: 3000; flex-direction: column; align-items: center;
+        }
+        .souvenir-list { display: flex; gap: 10px; overflow-x: auto; width: 100%; padding-bottom: 10px; }
+        .souvenir-item { font-size: 2em; cursor: pointer; padding: 5px; border: 2px solid transparent; border-radius: 5px; }
+        .souvenir-item:hover, .souvenir-item.selected { background: #eee; border-color: var(--purple-color); }
+        .souvenir-item.locked { opacity: 0.3; filter: grayscale(1); cursor: not-allowed; }
+
+        /* 成就 */
         .achievement-list { text-align: left; }
         .achievement-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #eee; gap: 15px; opacity: 0.5; filter: grayscale(1); transition: 0.3s; }
         .achievement-item.unlocked { opacity: 1; filter: none; background: #f9fbe7; border-radius: 10px; }
         .ach-icon { width: 60px; height: 60px; object-fit: contain; }
         
-        /* 圖鑑卡片 */
+        /* 圖鑑 */
         .collection-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; }
         .card-item { aspect-ratio: 2/3; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.2); position: relative; }
         .card-item.locked { filter: grayscale(1) opacity(0.7); }
@@ -229,12 +259,15 @@
                 </div>
             </div>
 
-            <div id="level-map" class="level-map-container"></div>
+            <div id="level-map" class="level-map-container">
+                <div id="decoration-overlay" onclick="placeDecorationOnMap(event)"></div>
+            </div>
             
             <div style="margin-top: 20px; background: rgba(255,255,255,0.9); padding:10px; border-radius:15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
-                <button class="btn btn-gold" onclick="openShop()">🏪 道具商店</button>
-                <button class="btn btn-blue" onclick="showCollection()">🎴 我的圖鑑</button>
-                <button class="btn btn-red" onclick="openAchievements()">🏅 成就牆</button>
+                <button class="btn btn-purple" onclick="toggleDecorationMode()">🎨 裝飾地圖</button>
+                <button class="btn btn-gold" onclick="openShop()">🏪 商店/扭蛋</button>
+                <button class="btn btn-blue" onclick="showCollection()">🎴 圖鑑</button>
+                <button class="btn btn-red" onclick="openAchievements()">🏅 成就</button>
                 <button class="btn btn-green" onclick="showHistory()">📜 紀錄</button>
                 <button id="btn-mistake" class="btn btn-gray" onclick="startQuiz('mistake')" style="display:none;">📕 錯題</button>
                 
@@ -244,6 +277,12 @@
                 </div>
                 <button class="btn btn-gray" onclick="logout()">🚪 登出</button>
             </div>
+        </div>
+
+        <div id="decoration-toolbar">
+            <p style="margin:0 0 10px 0; font-weight:bold;">👇 選擇紀念品貼紙 (點擊地圖空白處貼上)</p>
+            <div id="souvenir-list" class="souvenir-list"></div>
+            <button class="btn btn-sm btn-gray" onclick="toggleDecorationMode()">完成裝飾</button>
         </div>
 
         <div id="quiz-content" style="display: none;" class="fade-in">
@@ -260,7 +299,6 @@
                 <span>題號: <span id="current-q-num">1</span> / <span id="total-q-num">20</span></span>
             </div>
             <div class="timer-bar-container"><div id="timer-bar" class="timer-bar"></div></div>
-            
             <div id="combo-display" class="combo-text">COMBO x2!</div>
 
             <div id="question-container" class="fade-in">
@@ -272,13 +310,13 @@
             </div>
             
             <div class="powerups-bar">
-                <button class="powerup-btn" id="btn-use-fifty" onclick="usePowerUp('fifty')" title="刪去兩個錯誤選項">
+                <button class="powerup-btn" id="btn-use-fifty" onclick="usePowerUp('fifty')">
                     <img src="images/item_5050.png"> <span class="powerup-count" id="count-fifty">0</span>
                 </button>
-                <button class="powerup-btn" id="btn-use-hint" onclick="usePowerUp('hint')" title="偷看提示">
+                <button class="powerup-btn" id="btn-use-hint" onclick="usePowerUp('hint')">
                     <img src="images/item_hint.png"> <span class="powerup-count" id="count-hint">0</span>
                 </button>
-                <button class="powerup-btn" id="btn-use-skip" onclick="usePowerUp('skip')" title="跳過這題">
+                <button class="powerup-btn" id="btn-use-skip" onclick="usePowerUp('skip')">
                     <img src="images/item_skip.png"> <span class="powerup-count" id="count-skip">0</span>
                 </button>
             </div>
@@ -286,7 +324,6 @@
             <div id="explanation" class="explanation-box" style="display: none;">
                 <strong>💡 解析：</strong> <span id="explanation-text"></span>
             </div>
-
             <button id="next-btn" class="btn" style="display: none; width: 100%; margin-top: 25px;" onclick="nextQuestion()">下一題 ➡️</button>
         </div>
 
@@ -299,11 +336,9 @@
             </p>
             <div id="score-comment" style="font-size: 1.5em; margin-bottom: 20px;"></div>
             <div id="unlock-msg" style="color: var(--correct-color); font-weight: bold; display:none; font-size: 1.5em;">🔓 下一關已解鎖！</div>
-            
             <div id="new-card-alert" style="display:none; background:#e8f8f5; border:2px solid var(--correct-color); border-radius:15px; padding:10px; margin: 10px 0;">
                  <h3 style="margin:5px;">✨ 獲得新卡片！ ✨</h3>
             </div>
-
             <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
                 <button class="btn" onclick="goToLevelScreen()">🗺️ 返回地圖</button>
                 <button class="btn btn-green" onclick="toggleReview()">📝 查看解析</button>
@@ -315,20 +350,13 @@
         </div>
 
         <div id="history-screen" style="display: none;" class="fade-in">
-            <h2>📜 冒險英雄榜</h2>
-            <ul id="history-list"></ul>
-            <div style="margin-top: 20px;"><button class="btn" onclick="goToLevelScreen()">🗺️ 返回</button></div>
+            <h2>📜 冒險英雄榜</h2> <ul id="history-list"></ul> <div style="margin-top: 20px;"><button class="btn" onclick="goToLevelScreen()">🗺️ 返回</button></div>
         </div>
         <div id="history-detail-screen" style="display: none;" class="fade-in">
-            <h3>📜 試卷回顧</h3>
-            <ul id="history-review-list" class="review-list"></ul>
-            <button class="btn" onclick="showHistory()">⬅️ 返回</button>
+            <h3>📜 試卷回顧</h3> <ul id="history-review-list" class="review-list"></ul> <button class="btn" onclick="showHistory()">⬅️ 返回</button>
         </div>
-
         <div id="collection-screen" style="display: none;" class="fade-in">
-            <h2>🎴 我的圖鑑 (80分獲得)</h2>
-            <div id="collection-grid" class="collection-grid"></div>
-            <div style="text-align:center; margin-top:20px;"><button class="btn" onclick="goToLevelScreen()">🗺️ 返回</button></div>
+            <h2>🎴 我的圖鑑 (80分獲得)</h2> <div id="collection-grid" class="collection-grid"></div> <div style="text-align:center; margin-top:20px;"><button class="btn" onclick="goToLevelScreen()">🗺️ 返回</button></div>
         </div>
         
         <div id="shop-modal" class="modal-overlay" onclick="closeModal('shop-modal')">
@@ -336,28 +364,19 @@
                 <button class="modal-close" onclick="closeModal('shop-modal')">×</button>
                 <h2>🏪 道具商店</h2>
                 <p style="font-size:1.2em;">目前金幣：<img src="images/coin.png" width="25" style="vertical-align:middle;"> <span id="shop-user-gold">0</span></p>
-                <div class="shop-grid">
-                    <div class="shop-item">
-                        <img src="images/item_5050.png">
-                        <h4>50/50</h4>
-                        <p>刪去兩個錯誤選項</p>
-                        <div class="shop-price">💰 50</div>
-                        <button class="btn btn-sm btn-gold" onclick="buyItem('fifty', 50)">購買</button>
-                    </div>
-                    <div class="shop-item">
-                        <img src="images/item_hint.png">
-                        <h4>提示卡</h4>
-                        <p>偷看解析關鍵字</p>
-                        <div class="shop-price">💰 30</div>
-                        <button class="btn btn-sm btn-gold" onclick="buyItem('hint', 30)">購買</button>
-                    </div>
-                    <div class="shop-item">
-                        <img src="images/item_skip.png">
-                        <h4>跳過卡</h4>
-                        <p>跳過此題不計分</p>
-                        <div class="shop-price">💰 100</div>
-                        <button class="btn btn-sm btn-gold" onclick="buyItem('skip', 100)">購買</button>
-                    </div>
+                
+                <div class="shop-grid" style="margin-bottom:20px;">
+                    <div class="shop-item"><img src="images/item_5050.png"><h4>50/50</h4><p>刪去兩錯誤</p><div class="shop-price">💰 50</div><button class="btn btn-sm btn-gold" onclick="buyItem('fifty', 50)">購買</button></div>
+                    <div class="shop-item"><img src="images/item_hint.png"><h4>提示卡</h4><p>偷看提示</p><div class="shop-price">💰 30</div><button class="btn btn-sm btn-gold" onclick="buyItem('hint', 30)">購買</button></div>
+                    <div class="shop-item"><img src="images/item_skip.png"><h4>跳過卡</h4><p>跳過此題</p><div class="shop-price">💰 100</div><button class="btn btn-sm btn-gold" onclick="buyItem('skip', 100)">購買</button></div>
+                </div>
+
+                <div class="gacha-box">
+                    <h3 style="color:var(--purple-color);">🎰 紀念品扭蛋機 (100金幣/次)</h3>
+                    <p>收集紀念品來裝飾地圖吧！</p>
+                    <button class="btn btn-purple" onclick="playGacha()">🔮 轉一次</button>
+                    <div id="gacha-anim" class="gacha-anim">🌀 轉動中...</div>
+                    <div id="gacha-result" class="gacha-result"></div>
                 </div>
             </div>
         </div>
@@ -397,14 +416,26 @@
             { id: 'rich', title: '大富翁', desc: '持有金幣超過 1000', img: 'ach_rich.png' },
             { id: 'survivor', title: '不屈不撓', desc: '在錯題本中答對 5 題', img: 'ach_shield.png' }
         ];
+        
+        // 紀念品列表 (使用 Emoji 製作)
+        const SOUVENIRS = [
+            {id: 's01', icon: '⛩️', name: '鳥居'}, {id: 's02', icon: '🏯', name: '城堡'}, {id: 's03', icon: '🗻', name: '富士山'}, // SSR
+            {id: 's04', icon: '🦊', name: '狐狸'}, {id: 's05', icon: '🌸', name: '櫻花'}, {id: 's06', icon: '🎎', name: '人偶'}, // SR
+            {id: 's07', icon: '🍜', name: '拉麵'}, {id: 's08', icon: '🥬', name: '泡菜'}, {id: 's09', icon: '🍱', name: '便當'}, // R
+            {id: 's10', icon: '🍣', name: '壽司'}, {id: 's11', icon: '🍶', name: '清酒'}, {id: 's12', icon: '🥢', name: '筷子'}  // R
+        ];
 
         let allQuestions = [], currentQuizQuestions = [], currentQuestionIndex = 0, score = 0;
         let userName = "", currentLevel = 1, userAnswers = {}, isMistakeMode = false;
         let currentAvatar = "avatar_boy1.png"; 
         let currentTrackIndex = 0, isPlaying = false;
         let currentCombo = 0, goldEarnedThisRound = 0, timerInterval, timeRemaining = 20, quizStartTime;
+        
+        // 裝飾模式狀態
+        let isDecorationMode = false;
+        let selectedSouvenir = null;
 
-        // 音效設定
+        // 音效
         let audioCorrect = new Audio('sounds/correct.mp3'); audioCorrect.volume = 0.4;
         let audioFail = new Audio('sounds/fail.mp3'); audioFail.volume = 0.4;
         let audioBuy = new Audio('sounds/buy.mp3'); audioBuy.volume = 0.6;
@@ -412,7 +443,6 @@
         let audioUnlock = new Audio('sounds/unlock.mp3'); audioUnlock.volume = 0.6;
         let audioCombo = new Audio('sounds/combo.mp3'); audioCombo.volume = 0.5;
         let audioTimeout = new Audio('sounds/timeout.mp3'); audioTimeout.volume = 0.5;
-
         const bgmPlayer = document.getElementById('bgm-player');
         bgmPlayer.volume = 0.3; bgmPlayer.onended = nextTrack;
 
@@ -427,14 +457,17 @@
         
         function getUserData() {
             let data = JSON.parse(localStorage.getItem(getUserKey('userData'))) || {
-                gold: 500, inventory: { fifty: 0, hint: 0, skip: 0 }, achievements: [], maxLevel: 1, levelScores: {}
+                gold: 500, 
+                inventory: { fifty: 0, hint: 0, skip: 0 }, 
+                achievements: [], 
+                maxLevel: 1, 
+                levelScores: {},
+                collectedSouvenirs: [], // 擁有的紀念品 ID 列表
+                decorations: [] // 地圖上的裝飾 {id, icon, x, y}
             };
             return data;
         }
-        function saveUserData(data) {
-            localStorage.setItem(getUserKey('userData'), JSON.stringify(data));
-            updateUIStats();
-        }
+        function saveUserData(data) { localStorage.setItem(getUserKey('userData'), JSON.stringify(data)); updateUIStats(); }
 
         function updateUIStats() {
             let data = getUserData();
@@ -448,10 +481,8 @@
             if(document.getElementById('rank-icon')) document.getElementById('rank-icon').src = "images/" + rankImg;
 
             ['fifty', 'hint', 'skip'].forEach(item => {
-                let el = document.getElementById('count-' + item);
-                if(el) el.innerText = data.inventory[item];
-                let btn = document.getElementById('btn-use-' + item);
-                if(btn) btn.disabled = (data.inventory[item] <= 0);
+                let el = document.getElementById('count-' + item); if(el) el.innerText = data.inventory[item];
+                let btn = document.getElementById('btn-use-' + item); if(btn) btn.disabled = (data.inventory[item] <= 0);
             });
         }
 
@@ -476,17 +507,12 @@
             }
         }
         function quickLogin(name, avatar) {
-            document.getElementById('username').value = name;
-            currentAvatar = avatar;
-            loginAndStart();
+            document.getElementById('username').value = name; currentAvatar = avatar; loginAndStart();
         }
         function deleteUser(name) {
             if (!confirm(`確定要刪除「${name}」的所有資料嗎？`)) return;
             if (!confirm(`⚠️ 警告：刪除後無法復原！`)) return;
-            localStorage.removeItem(name + '_userData');
-            localStorage.removeItem(name + '_mistakeBank');
-            localStorage.removeItem(name + '_quizHistory');
-            localStorage.removeItem(name + '_quizProgress'); // 清除舊版進度
+            localStorage.removeItem(name + '_userData'); localStorage.removeItem(name + '_mistakeBank'); localStorage.removeItem(name + '_quizHistory'); localStorage.removeItem(name + '_quizProgress');
             let users = getSavedUsers().filter(u => (typeof u === 'string' ? u : u.name) !== name);
             localStorage.setItem('savedUsers', JSON.stringify(users));
             renderQuickLogin();
@@ -495,14 +521,11 @@
             const inputName = document.getElementById('username').value.trim();
             if (!inputName) { alert("請先輸入名字！"); return; }
             userName = inputName;
-            localStorage.setItem('quizUserName', userName);
-            
+            localStorage.setItem('quizUserName', userName); localStorage.setItem('quizUserAvatar', currentAvatar);
             let users = getSavedUsers().filter(u => (typeof u === 'string' ? u : u.name) !== userName);
             users.push({ name: userName, avatar: currentAvatar });
             localStorage.setItem('savedUsers', JSON.stringify(users));
-
-            if (!isPlaying) playMusic();
-            goToLevelScreen();
+            if (!isPlaying) playMusic(); goToLevelScreen();
         }
 
         function goToLevelScreen() {
@@ -510,9 +533,198 @@
             document.getElementById('user-avatar-display').src = "images/" + currentAvatar;
             document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none');
             document.getElementById('level-screen').style.display = 'block';
-            updateUIStats(); renderLevelMap(); updateMistakeButton();
+            updateUIStats(); renderLevelMap(); renderDecorations(); updateMistakeButton();
         }
 
+        function renderLevelMap() {
+            const container = document.getElementById('level-map'); container.innerHTML = '<div id="decoration-overlay" onclick="placeDecorationOnMap(event)"></div>'; // 重置並保留遮罩
+            const data = getUserData();
+            let rows = [];
+            for (let i = 0; i < LEVEL_CONFIG.length; i += ITEMS_PER_ROW) rows.push(LEVEL_CONFIG.slice(i, i + ITEMS_PER_ROW));
+            rows.forEach((rowItems, rowIndex) => {
+                let rowDiv = document.createElement('div'); rowDiv.className = 'level-row';
+                let isReverse = (rowIndex % 2 !== 0); if (isReverse) rowDiv.classList.add('reverse');
+                let startLevelNum = rowIndex * ITEMS_PER_ROW + 1;
+                rowItems.forEach((_, itemIndex) => {
+                    let levelNum = startLevelNum + itemIndex;
+                    let wrapper = document.createElement('div'); wrapper.className = 'level-wrapper';
+                    let btn = document.createElement('button'); btn.className = 'level-btn';
+                    if (levelNum <= data.maxLevel) {
+                        let bestScore = data.levelScores[levelNum];
+                        let icon = bestScore >= 80 ? '🚩' : '🏳️';
+                        if (bestScore === 100) icon = '👑'; else if (bestScore >= 90) icon = '⭐';
+                        let scoreText = bestScore !== undefined ? `<div class="level-score">${bestScore}分</div>` : '<div class="level-score">GO!</div>';
+                        btn.innerHTML = `<div class="level-title">${icon} 第 ${levelNum} 關</div>${scoreText}`;
+                        btn.onclick = () => startQuiz('level', levelNum);
+                        if (levelNum === data.maxLevel) {
+                            let avatarImg = document.createElement('img'); avatarImg.src = "images/" + currentAvatar; avatarImg.className = "map-avatar"; wrapper.appendChild(avatarImg);
+                        }
+                    } else {
+                        btn.disabled = true; btn.innerHTML = `<div class="level-title">🔒 第 ${levelNum} 關</div><div class="level-score" style="color:gray">鎖定</div>`;
+                    }
+                    wrapper.appendChild(btn);
+                    if (itemIndex < rowItems.length - 1) {
+                        let arrow = document.createElement('div'); arrow.className = 'arrow-icon';
+                        if (isReverse) { arrow.innerHTML = '➜'; arrow.classList.add('arrow-left'); } else { arrow.innerText = '➜'; arrow.classList.add('arrow-right'); }
+                        wrapper.appendChild(arrow);
+                    }
+                    rowDiv.appendChild(wrapper);
+                });
+                container.appendChild(rowDiv);
+                if (rowIndex < rows.length - 1) {
+                    let connectorDiv = document.createElement('div'); connectorDiv.className = 'row-connector';
+                    let downArrow = document.createElement('div'); downArrow.className = 'arrow-icon arrow-down'; downArrow.innerText = '⬇';
+                    if (isReverse) connectorDiv.classList.add('left');
+                    connectorDiv.appendChild(downArrow); container.appendChild(connectorDiv);
+                }
+            });
+            renderDecorations(); // 確保地圖生成後渲染裝飾
+        }
+
+        // --- 扭蛋與裝飾系統 ---
+        function playGacha() {
+            let data = getUserData();
+            if(data.gold < 100) { alert("金幣不足 (需要100)！"); return; }
+            data.gold -= 100; saveUserData(data);
+            audioBuy.play().catch(e=>{});
+
+            let anim = document.getElementById('gacha-anim');
+            let result = document.getElementById('gacha-result');
+            anim.style.display = 'block'; result.style.display = 'none';
+            
+            setTimeout(() => {
+                anim.style.display = 'none';
+                // 隨機抽獎
+                let prize = SOUVENIRS[Math.floor(Math.random() * SOUVENIRS.length)];
+                // 加入收藏
+                if(!data.collectedSouvenirs.includes(prize.id)) {
+                    data.collectedSouvenirs.push(prize.id);
+                    saveUserData(data);
+                }
+                result.innerHTML = `獲得：${prize.icon} ${prize.name}！`;
+                result.style.display = 'block';
+                audioUnlock.play().catch(e=>{});
+            }, 1000);
+        }
+
+        function toggleDecorationMode() {
+            isDecorationMode = !isDecorationMode;
+            let overlay = document.getElementById('decoration-overlay');
+            let toolbar = document.getElementById('decoration-toolbar');
+            
+            if(isDecorationMode) {
+                overlay.style.display = 'block';
+                toolbar.style.display = 'flex';
+                renderSouvenirList();
+            } else {
+                overlay.style.display = 'none';
+                toolbar.style.display = 'none';
+                selectedSouvenir = null;
+            }
+        }
+
+        function renderSouvenirList() {
+            let data = getUserData();
+            let list = document.getElementById('souvenir-list');
+            list.innerHTML = "";
+            SOUVENIRS.forEach(item => {
+                let hasItem = data.collectedSouvenirs.includes(item.id);
+                let div = document.createElement('div');
+                div.className = `souvenir-item ${hasItem ? '' : 'locked'}`;
+                div.innerText = item.icon;
+                if(hasItem) {
+                    div.onclick = () => {
+                        selectedSouvenir = item;
+                        document.querySelectorAll('.souvenir-item').forEach(el => el.classList.remove('selected'));
+                        div.classList.add('selected');
+                    };
+                }
+                list.appendChild(div);
+            });
+        }
+
+        function placeDecorationOnMap(e) {
+            if(!selectedSouvenir) return;
+            let rect = document.getElementById('level-map').getBoundingClientRect();
+            let x = e.clientX - rect.left;
+            let y = e.clientY - rect.top;
+            
+            // 轉成百分比儲存以適應不同螢幕
+            let xPct = (x / rect.width) * 100;
+            let yPct = (y / rect.height) * 100;
+
+            let data = getUserData();
+            data.decorations.push({ id: Date.now(), icon: selectedSouvenir.icon, x: xPct, y: yPct });
+            saveUserData(data);
+            
+            renderDecorations();
+            audioUse.play().catch(e=>{});
+        }
+
+        function renderDecorations() {
+            let data = getUserData();
+            // 清除舊的裝飾 (保留 overlay)
+            let container = document.getElementById('level-map');
+            let oldDecos = document.querySelectorAll('.map-decoration');
+            oldDecos.forEach(el => el.remove());
+
+            data.decorations.forEach(deco => {
+                let el = document.createElement('div');
+                el.className = 'map-decoration';
+                el.innerText = deco.icon;
+                el.style.left = deco.x + '%';
+                el.style.top = deco.y + '%';
+                
+                // 點擊移除 (僅在裝飾模式下)
+                el.onclick = (e) => {
+                    if(isDecorationMode) {
+                        e.stopPropagation(); // 防止觸發新增
+                        if(confirm("要移除這個裝飾嗎？")) {
+                            data.decorations = data.decorations.filter(d => d.id !== deco.id);
+                            saveUserData(data);
+                            renderDecorations();
+                        }
+                    }
+                };
+                container.appendChild(el);
+            });
+        }
+
+        // --- 商店與成就 ---
+        function openShop() { document.getElementById('shop-modal').style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        
+        function buyItem(item, cost) {
+            let data = getUserData();
+            if (data.gold >= cost) {
+                data.gold -= cost; data.inventory[item]++; saveUserData(data);
+                audioBuy.play().catch(e=>{}); alert("購買成功！");
+            } else alert("金幣不足！");
+        }
+
+        function openAchievements() {
+            let data = getUserData();
+            let list = document.getElementById('achievement-list'); list.innerHTML = "";
+            ACHIEVEMENTS.forEach(ach => {
+                let isUnlocked = data.achievements.includes(ach.id);
+                let div = document.createElement('div');
+                div.className = `achievement-item ${isUnlocked ? 'unlocked' : ''}`;
+                div.innerHTML = `<img src="images/${ach.img}" class="ach-icon"><div><h4>${ach.title}</h4><p>${ach.desc}</p></div>${isUnlocked?'✅':''}`;
+                list.appendChild(div);
+            });
+            document.getElementById('achievement-modal').style.display = 'flex';
+        }
+
+        function checkAchievements(finalScore, durationSeconds) {
+            let data = getUserData(); let newUnlock = false;
+            if (finalScore === 100 && !data.achievements.includes('sharpshooter')) { data.achievements.push('sharpshooter'); newUnlock = true; }
+            if (finalScore === 100 && durationSeconds < 180 && !data.achievements.includes('speedstar')) { data.achievements.push('speedstar'); newUnlock = true; }
+            if (data.gold >= 1000 && !data.achievements.includes('rich')) { data.achievements.push('rich'); newUnlock = true; }
+            if (isMistakeMode && score >= 5 && !data.achievements.includes('survivor')) { data.achievements.push('survivor'); newUnlock = true; }
+            if(newUnlock) { saveUserData(data); audioUnlock.play().catch(e=>{}); alert("🎉 恭喜！解鎖了新的成就！"); }
+        }
+
+        // --- 測驗流程 ---
         function startQuiz(mode, levelNum) {
             isMistakeMode = (mode === 'mistake');
             userAnswers = {}; score = 0; currentQuestionIndex = 0;
@@ -575,8 +787,7 @@
         }
 
         function handleTimeOut() {
-            audioTimeout.play().catch(e=>{});
-            currentCombo = 0;
+            audioTimeout.play().catch(e=>{}); currentCombo = 0;
             checkAnswer(null, "TIMEOUT", currentQuizQuestions[currentQuestionIndex], true);
         }
 
@@ -584,7 +795,6 @@
             clearInterval(timerInterval);
             const buttons = document.querySelectorAll('.option-btn'); buttons.forEach(button => button.disabled = true); 
             let isCorrect = false; const correctCode = questionData.answer.substring(0, 3);
-
             if (!isTimeout) {
                 userAnswers[questionData.id] = selectedOption;
                 const selectedCode = selectedOption.substring(0, 3);
@@ -638,39 +848,6 @@
             updateUIStats();
         }
 
-        function openShop() { document.getElementById('shop-modal').style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        
-        function buyItem(item, cost) {
-            let data = getUserData();
-            if (data.gold >= cost) {
-                data.gold -= cost; data.inventory[item]++; saveUserData(data);
-                audioBuy.play().catch(e=>{}); alert("購買成功！");
-            } else alert("金幣不足！");
-        }
-
-        function openAchievements() {
-            let data = getUserData();
-            let list = document.getElementById('achievement-list'); list.innerHTML = "";
-            ACHIEVEMENTS.forEach(ach => {
-                let isUnlocked = data.achievements.includes(ach.id);
-                let div = document.createElement('div');
-                div.className = `achievement-item ${isUnlocked ? 'unlocked' : ''}`;
-                div.innerHTML = `<img src="images/${ach.img}" class="ach-icon"><div><h4>${ach.title}</h4><p>${ach.desc}</p></div>${isUnlocked?'✅':''}`;
-                list.appendChild(div);
-            });
-            document.getElementById('achievement-modal').style.display = 'flex';
-        }
-
-        function checkAchievements(finalScore, durationSeconds) {
-            let data = getUserData(); let newUnlock = false;
-            if (finalScore === 100 && !data.achievements.includes('sharpshooter')) { data.achievements.push('sharpshooter'); newUnlock = true; }
-            if (finalScore === 100 && durationSeconds < 180 && !data.achievements.includes('speedstar')) { data.achievements.push('speedstar'); newUnlock = true; }
-            if (data.gold >= 1000 && !data.achievements.includes('rich')) { data.achievements.push('rich'); newUnlock = true; }
-            if (isMistakeMode && score >= 5 && !data.achievements.includes('survivor')) { data.achievements.push('survivor'); newUnlock = true; }
-            if(newUnlock) { saveUserData(data); audioUnlock.play().catch(e=>{}); alert("🎉 恭喜！解鎖了新的成就！"); }
-        }
-
         function showResult() {
             let duration = (Date.now() - quizStartTime) / 1000;
             document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none');
@@ -695,7 +872,6 @@
                 if (currentLevel === data.maxLevel && currentLevel < LEVEL_CONFIG.length) {
                     unlockMsg.style.display = 'block'; data.maxLevel++;
                 } else unlockMsg.style.display = 'none';
-                
                 if (!data.levelScores[currentLevel] || finalScore > data.levelScores[currentLevel]) data.levelScores[currentLevel] = finalScore;
                 if(finalScore >= 80) {
                     let gif = REWARD_GIFS[Math.floor(Math.random()*REWARD_GIFS.length)];
@@ -704,103 +880,37 @@
                 }
                 confetti({ particleCount: 200, spread: 150 });
             } else unlockMsg.style.display = 'none';
-            
             saveUserData(data); checkAchievements(finalScore, duration);
             if(gotNewCard) newCardAlert.style.display = 'block'; else newCardAlert.style.display = 'none';
             saveHistory(userName, finalScore, currentQuizQuestions, userAnswers, isMistakeMode ? "錯題挑戰" : `第 ${currentLevel} 關`);
             renderReviewList('review-list', currentQuizQuestions, userAnswers);
         }
-
-        function renderLevelMap() {
-            const container = document.getElementById('level-map'); container.innerHTML = "";
-            const data = getUserData();
-            let rows = [];
-            for (let i = 0; i < LEVEL_CONFIG.length; i += ITEMS_PER_ROW) rows.push(LEVEL_CONFIG.slice(i, i + ITEMS_PER_ROW));
-            rows.forEach((rowItems, rowIndex) => {
-                let rowDiv = document.createElement('div'); rowDiv.className = 'level-row';
-                let isReverse = (rowIndex % 2 !== 0); if (isReverse) rowDiv.classList.add('reverse');
-                let startLevelNum = rowIndex * ITEMS_PER_ROW + 1;
-                rowItems.forEach((_, itemIndex) => {
-                    let levelNum = startLevelNum + itemIndex;
-                    let wrapper = document.createElement('div'); wrapper.className = 'level-wrapper';
-                    let btn = document.createElement('button'); btn.className = 'level-btn';
-                    if (levelNum <= data.maxLevel) {
-                        let bestScore = data.levelScores[levelNum];
-                        let icon = bestScore >= 80 ? '🚩' : '🏳️';
-                        if (bestScore === 100) icon = '👑'; else if (bestScore >= 90) icon = '⭐';
-                        let scoreText = bestScore !== undefined ? `<div class="level-score">${bestScore}分</div>` : '<div class="level-score">GO!</div>';
-                        btn.innerHTML = `<div class="level-title">${icon} 第 ${levelNum} 關</div>${scoreText}`;
-                        btn.onclick = () => startQuiz('level', levelNum);
-                        if (levelNum === data.maxLevel) {
-                            let avatarImg = document.createElement('img'); avatarImg.src = "images/" + currentAvatar; avatarImg.className = "map-avatar"; wrapper.appendChild(avatarImg);
-                        }
-                    } else {
-                        btn.disabled = true; btn.innerHTML = `<div class="level-title">🔒 第 ${levelNum} 關</div><div class="level-score" style="color:gray">鎖定</div>`;
-                    }
-                    wrapper.appendChild(btn);
-                    if (itemIndex < rowItems.length - 1) {
-                        let arrow = document.createElement('div'); arrow.className = 'arrow-icon';
-                        if (isReverse) { arrow.innerHTML = '➜'; arrow.classList.add('arrow-left'); } else { arrow.innerText = '➜'; arrow.classList.add('arrow-right'); }
-                        wrapper.appendChild(arrow);
-                    }
-                    rowDiv.appendChild(wrapper);
-                });
-                container.appendChild(rowDiv);
-                if (rowIndex < rows.length - 1) {
-                    let connectorDiv = document.createElement('div'); connectorDiv.className = 'row-connector';
-                    let downArrow = document.createElement('div'); downArrow.className = 'arrow-icon arrow-down'; downArrow.innerText = '⬇';
-                    if (isReverse) connectorDiv.classList.add('left');
-                    connectorDiv.appendChild(downArrow); container.appendChild(connectorDiv);
-                }
-            });
-        }
-
-        function showCollection() {
-            document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none');
-            document.getElementById('collection-screen').style.display = 'block';
-            const grid = document.getElementById('collection-grid'); grid.innerHTML = "";
-            const data = getUserData();
+        function showCollection() { document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none'); document.getElementById('collection-screen').style.display = 'block'; renderCollectionGrid(); }
+        function renderCollectionGrid() {
+            const grid = document.getElementById('collection-grid'); grid.innerHTML = ""; const data = getUserData();
             for (let i = 1; i <= LEVEL_CONFIG.length; i++) {
-                let bestScore = data.levelScores[i];
-                let isUnlocked = (bestScore !== undefined && bestScore >= 80);
-                let numStr = i < 10 ? `0${i}` : `${i}`;
-                let imgSrc = `images/card_${numStr}.jpg`;
+                let bestScore = data.levelScores[i]; let isUnlocked = (bestScore !== undefined && bestScore >= 80);
+                let numStr = i < 10 ? `0${i}` : `${i}`; let imgSrc = `images/card_${numStr}.jpg`;
                 let cardItem = document.createElement('div');
                 if (isUnlocked) {
-                    cardItem.className = 'card-item';
-                    cardItem.innerHTML = `<img src="${imgSrc}" class="card-img" onerror="this.style.display='none'">`;
+                    cardItem.className = 'card-item'; cardItem.innerHTML = `<img src="${imgSrc}" class="card-img" onerror="this.style.display='none'">`;
                     cardItem.onclick = () => openCardModal(imgSrc, `第 ${i} 關獎勵`);
                 } else {
-                    cardItem.className = 'card-item locked';
-                    cardItem.innerHTML = `<img src="${imgSrc}" class="card-img" onerror="this.style.display='none'"><div class="card-overlay"><div class="card-lock-icon">🔒</div><div class="card-label">第 ${i} 關</div></div>`;
+                    cardItem.className = 'card-item locked'; cardItem.innerHTML = `<img src="${imgSrc}" class="card-img" onerror="this.style.display='none'"><div class="card-overlay"><div class="card-lock-icon">🔒</div><div class="card-label">第 ${i} 關</div></div>`;
                 }
                 grid.appendChild(cardItem);
             }
         }
         function openCardModal(src, title) { document.getElementById('modal-img').src = src; document.getElementById('modal-title').innerText = title; document.getElementById('card-modal').style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        
         function getMistakeBank() { return JSON.parse(localStorage.getItem(getUserKey('mistakeBank'))) || []; }
         function updateMistakeButton() {
-            let mistakes = getMistakeBank();
-            let btn = document.getElementById('btn-mistake');
-            if (mistakes.length > 0) { btn.style.display = 'inline-block'; document.getElementById('mistake-count').innerText = mistakes.length; } 
-            else btn.style.display = 'none';
+            let mistakes = getMistakeBank(); let btn = document.getElementById('btn-mistake');
+            if (mistakes.length > 0) { btn.style.display = 'inline-block'; document.getElementById('mistake-count').innerText = mistakes.length; } else btn.style.display = 'none';
         }
-        function addToMistakeBank(id) {
-            let mistakes = getMistakeBank();
-            if (!mistakes.includes(id)) { mistakes.push(id); localStorage.setItem(getUserKey('mistakeBank'), JSON.stringify(mistakes)); }
-        }
-        function removeFromMistakeBank(id) {
-            let mistakes = getMistakeBank();
-            mistakes = mistakes.filter(mId => mId !== id);
-            localStorage.setItem(getUserKey('mistakeBank'), JSON.stringify(mistakes));
-        }
-        function toggleReview() {
-            let reviewArea = document.getElementById('full-review-area');
-            reviewArea.style.display = (reviewArea.style.display === 'none') ? 'block' : 'none';
-            if (reviewArea.style.display === 'block') reviewArea.scrollIntoView({ behavior: 'smooth' });
-        }
+        function addToMistakeBank(id) { let mistakes = getMistakeBank(); if (!mistakes.includes(id)) { mistakes.push(id); localStorage.setItem(getUserKey('mistakeBank'), JSON.stringify(mistakes)); } }
+        function removeFromMistakeBank(id) { let mistakes = getMistakeBank(); mistakes = mistakes.filter(mId => mId !== id); localStorage.setItem(getUserKey('mistakeBank'), JSON.stringify(mistakes)); }
+        function toggleReview() { let reviewArea = document.getElementById('full-review-area'); reviewArea.style.display = (reviewArea.style.display === 'none') ? 'block' : 'none'; if (reviewArea.style.display === 'block') reviewArea.scrollIntoView({ behavior: 'smooth' }); }
         function renderReviewList(elementId, questionsData, answersData) {
             let list = document.getElementById(elementId); list.innerHTML = "";
             questionsData.forEach((q, index) => {
@@ -819,8 +929,7 @@
             history.push(record); localStorage.setItem(getUserKey('quizHistory'), JSON.stringify(history));
         }
         function showHistory() {
-            document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none');
-            document.getElementById('history-screen').style.display = 'block';
+            document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none'); document.getElementById('history-screen').style.display = 'block';
             let history = JSON.parse(localStorage.getItem(getUserKey('quizHistory'))) || [];
             let list = document.getElementById('history-list'); list.innerHTML = "";
             if(history.length === 0) list.innerHTML = "<li style='justify-content:center'>暫無紀錄</li>";
@@ -832,25 +941,8 @@
                 });
             }
         }
-        function deleteHistoryItem(id) {
-            if(!confirm("確定要刪除這筆作答紀錄嗎？")) return;
-            if(!confirm("⚠️ 警告：刪除後無法復原！\n您真的確定要刪除嗎？")) return;
-            let history = JSON.parse(localStorage.getItem(getUserKey('quizHistory'))) || [];
-            history = history.filter(r => r.id !== id);
-            localStorage.setItem(getUserKey('quizHistory'), JSON.stringify(history));
-            showHistory();
-        }
-        function replayHistory(recordId) {
-            let history = JSON.parse(localStorage.getItem(getUserKey('quizHistory'))) || [];
-            let record = history.find(r => r.id === recordId);
-            if (!record) return;
-            document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none');
-            document.getElementById('history-detail-screen').style.display = 'block';
-            document.getElementById('history-date').innerText = record.date;
-            document.getElementById('history-score').innerText = record.score;
-            let examQuestions = allQuestions.filter(q => record.questionIds.includes(q.id));
-            renderReviewList('history-review-list', examQuestions, record.answers);
-        }
+        function deleteHistoryItem(id) { if(!confirm("確定刪除？")) return; if(!confirm("無法復原，確定？")) return; let history = JSON.parse(localStorage.getItem(getUserKey('quizHistory'))) || []; history = history.filter(r => r.id !== id); localStorage.setItem(getUserKey('quizHistory'), JSON.stringify(history)); showHistory(); }
+        function replayHistory(recordId) { let history = JSON.parse(localStorage.getItem(getUserKey('quizHistory'))) || []; let record = history.find(r => r.id === recordId); if (!record) return; document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none'); document.getElementById('history-detail-screen').style.display = 'block'; let examQuestions = allQuestions.filter(q => record.questionIds.includes(q.id)); renderReviewList('history-review-list', examQuestions, record.answers); }
     </script>
 </body>
 </html>
