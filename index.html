@@ -18,7 +18,6 @@
             --locked-color: #BDC3C7;
             --music-btn-color: #3498db;
             --gold-color: #f1c40f;
-            --purple-color: #9b59b6;
         }
 
         body { 
@@ -45,7 +44,6 @@
         .fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
         .pop-anim { animation: pop 0.3s; }
-        @keyframes shake { 0% { transform: rotate(0deg); } 25% { transform: rotate(5deg); } 75% { transform: rotate(-5deg); } 100% { transform: rotate(0deg); } }
 
         /* --- 按鈕樣式 --- */
         .btn {
@@ -61,7 +59,6 @@
         .btn-gray { background-color: #95a5a6; box-shadow: 0 5px 0 #7f8c8d; }
         .btn-blue { background-color: #3498db; box-shadow: 0 5px 0 #2980b9; }
         .btn-gold { background-color: var(--gold-color); box-shadow: 0 5px 0 #d4ac0d; color: #fff; text-shadow: 1px 1px 0 #b7950b; }
-        .btn-purple { background-color: var(--purple-color); box-shadow: 0 5px 0 #8e44ad; }
         
         .btn-sm { padding: 6px 12px; font-size: 1em; margin: 0 2px; box-shadow: 0 3px 0 rgba(0,0,0,0.2); }
         .btn-music { background-color: var(--music-btn-color); box-shadow: 0 3px 0 #2980b9; }
@@ -89,34 +86,19 @@
         #level-screen {
             background-image: url('images/map_bg.jpg'); background-size: cover; background-position: center;
             border-radius: 15px; padding: 20px; min-height: 400px; position: relative;
-            overflow: hidden; /* 防止裝飾品溢出 */
         }
-        /* 地圖裝飾品 */
-        .map-decoration {
-            position: absolute; font-size: 2.5em; z-index: 1; cursor: pointer;
-            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));
-            transition: transform 0.2s;
-        }
-        .map-decoration:hover { transform: scale(1.2); }
-        /* 裝飾模式遮罩 */
-        #decoration-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.1); z-index: 5; cursor: crosshair;
-            display: none; border: 4px dashed var(--purple-color); box-sizing: border-box; border-radius: 15px;
-        }
-        
-        /* 頂部資訊列 */
+        /* 頂部資訊列 (稱號/金幣) */
         .status-bar {
             display: flex; justify-content: space-between; align-items: center;
             background: rgba(255,255,255,0.9); padding: 10px 20px; border-radius: 15px; margin-bottom: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; z-index: 20;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .status-item { display: flex; align-items: center; gap: 10px; font-size: 1.1em; font-weight: bold; color: #555; }
         .rank-img { width: 50px; height: 50px; object-fit: contain; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2)); }
         .coin-icon { width: 30px; height: 30px; vertical-align: middle; }
         
         /* S型地圖 */
-        .level-map-container { display: flex; flex-direction: column; align-items: center; gap: 10px; position: relative; z-index: 10; }
+        .level-map-container { display: flex; flex-direction: column; align-items: center; gap: 10px; }
         .level-row { display: flex; justify-content: center; align-items: center; gap: 15px; }
         .level-row.reverse { flex-direction: row-reverse; }
         .level-wrapper { display: flex; align-items: center; position: relative; }
@@ -158,7 +140,9 @@
         .timer-bar-container { width: 100%; height: 10px; background: #ddd; border-radius: 5px; overflow: hidden; margin-bottom: 15px; }
         .timer-bar { height: 100%; background: var(--wrong-color); width: 100%; transition: width 1s linear; }
         
+        /* 連擊與金幣特效 */
         .combo-text { position: absolute; top: 50px; right: 20px; font-size: 2em; color: #ffcc00; font-weight: bold; text-shadow: 2px 2px 0 red; transform: rotate(-10deg); animation: pop 0.3s; display: none; z-index: 100; }
+
         .question-box { background-color: #FFF9F0; border-left: 8px solid var(--accent-color); padding: 20px; margin-bottom: 20px; border-radius: 15px; }
         .question-text { font-size: 1.8em; font-weight: 600; line-height: 1.6; }
         .question-img { max-width: 100%; max-height: 220px; width: auto; object-fit: contain; display: block; margin: 15px auto; border-radius: 15px; }
@@ -167,6 +151,7 @@
         .correct { background-color: #D4EDDA !important; border-color: var(--correct-color) !important; }
         .wrong { background-color: #F8D7DA !important; border-color: var(--wrong-color) !important; opacity: 0.6; }
         
+        /* 道具欄 */
         .powerups-bar { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
         .powerup-btn { background: white; border: 2px solid #ccc; border-radius: 15px; width: 70px; height: 70px; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; }
         .powerup-btn img { width: 40px; height: 40px; object-fit: contain; }
@@ -179,35 +164,20 @@
         .modal-content { background: white; padding: 20px; border-radius: 15px; max-width: 90%; max-height: 90%; text-align: center; position: relative; overflow-y: auto; }
         .modal-close { position: absolute; top: 10px; right: 10px; background: #eee; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
 
-        /* 商店與扭蛋 */
+        /* 商店項目 */
         .shop-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
         .shop-item { border: 2px solid #eee; padding: 15px; border-radius: 10px; text-align: center; transition: 0.2s; }
         .shop-item:hover { border-color: var(--gold-color); transform: translateY(-5px); }
         .shop-item img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 10px; }
         .shop-price { color: var(--gold-color); font-weight: bold; font-size: 1.2em; }
         
-        .gacha-box { border: 4px solid var(--purple-color); border-radius: 15px; padding: 20px; background: #f3e5f5; margin-top: 20px; }
-        .gacha-anim { font-size: 5em; animation: shake 0.5s infinite; display:none; }
-        .gacha-result { font-size: 3em; animation: pop 0.5s; display:none; }
-
-        /* 裝飾工具列 */
-        #decoration-toolbar {
-            position: fixed; bottom: 0; left: 0; width: 100%; background: white;
-            padding: 15px; box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
-            display: none; z-index: 3000; flex-direction: column; align-items: center;
-        }
-        .souvenir-list { display: flex; gap: 10px; overflow-x: auto; width: 100%; padding-bottom: 10px; }
-        .souvenir-item { font-size: 2em; cursor: pointer; padding: 5px; border: 2px solid transparent; border-radius: 5px; }
-        .souvenir-item:hover, .souvenir-item.selected { background: #eee; border-color: var(--purple-color); }
-        .souvenir-item.locked { opacity: 0.3; filter: grayscale(1); cursor: not-allowed; }
-
-        /* 成就 */
+        /* 成就項目 */
         .achievement-list { text-align: left; }
         .achievement-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #eee; gap: 15px; opacity: 0.5; filter: grayscale(1); transition: 0.3s; }
         .achievement-item.unlocked { opacity: 1; filter: none; background: #f9fbe7; border-radius: 10px; }
         .ach-icon { width: 60px; height: 60px; object-fit: contain; }
         
-        /* 圖鑑 */
+        /* 圖鑑卡片 */
         .collection-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; }
         .card-item { aspect-ratio: 2/3; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.2); position: relative; }
         .card-item.locked { filter: grayscale(1) opacity(0.7); }
@@ -239,11 +209,7 @@
                 <img src="images/avatar_girl2.png" class="avatar-option" onclick="selectAvatar('avatar_girl2.png', this)">
             </div>
             <div id="quick-login-area" class="quick-login-area"></div>
-            
-            <div id="daily-reward-msg" style="display:none; background:#fff3cd; padding:10px; margin:10px; border-radius:10px; border:2px solid #ffc107;">
-                📅 每日簽到成功！獲得 50 金幣！💰
-            </div>
-
+            <br>
             <button class="btn" onclick="loginAndStart()">👉 進入關卡地圖</button>
         </div>
 
@@ -263,15 +229,12 @@
                 </div>
             </div>
 
-            <div id="level-map" class="level-map-container">
-                <div id="decoration-overlay" onclick="placeDecorationOnMap(event)"></div>
-            </div>
+            <div id="level-map" class="level-map-container"></div>
             
             <div style="margin-top: 20px; background: rgba(255,255,255,0.9); padding:10px; border-radius:15px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
-                <button class="btn btn-purple" onclick="toggleDecorationMode()">🎨 裝飾地圖</button>
-                <button class="btn btn-gold" onclick="openShop()">🏪 商店/扭蛋</button>
-                <button class="btn btn-blue" onclick="showCollection()">🎴 圖鑑</button>
-                <button class="btn btn-red" onclick="openAchievements()">🏅 成就</button>
+                <button class="btn btn-gold" onclick="openShop()">🏪 道具商店</button>
+                <button class="btn btn-blue" onclick="showCollection()">🎴 我的圖鑑</button>
+                <button class="btn btn-red" onclick="openAchievements()">🏅 成就牆</button>
                 <button class="btn btn-green" onclick="showHistory()">📜 紀錄</button>
                 <button id="btn-mistake" class="btn btn-gray" onclick="startQuiz('mistake')" style="display:none;">📕 錯題</button>
                 
@@ -283,18 +246,12 @@
             </div>
         </div>
 
-        <div id="decoration-toolbar">
-            <p style="margin:0 0 10px 0; font-weight:bold;">👇 選擇紀念品貼紙 (點擊地圖空白處貼上)</p>
-            <div id="souvenir-list" class="souvenir-list"></div>
-            <button class="btn btn-sm btn-gray" onclick="toggleDecorationMode()">完成裝飾</button>
-        </div>
-
         <div id="quiz-content" style="display: none;" class="fade-in">
             <div class="quiz-header">
                 <h3 id="level-title" style="margin:0;">第 X 關</h3>
                 <div class="header-controls">
                     <button class="btn btn-sm btn-music" onclick="toggleMusic()">⏯️</button>
-                    <button class="btn btn-gray btn-sm" onclick="exitQuiz()">🏠 回到地圖</button>
+                    <button class="btn btn-gray btn-sm" onclick="exitQuiz()">🏠 返回</button>
                 </div>
             </div>
             
@@ -303,6 +260,7 @@
                 <span>題號: <span id="current-q-num">1</span> / <span id="total-q-num">20</span></span>
             </div>
             <div class="timer-bar-container"><div id="timer-bar" class="timer-bar"></div></div>
+            
             <div id="combo-display" class="combo-text">COMBO x2!</div>
 
             <div id="question-container" class="fade-in">
@@ -314,13 +272,13 @@
             </div>
             
             <div class="powerups-bar">
-                <button class="powerup-btn" id="btn-use-fifty" onclick="usePowerUp('fifty')">
+                <button class="powerup-btn" id="btn-use-fifty" onclick="usePowerUp('fifty')" title="刪去兩個錯誤選項">
                     <img src="images/item_5050.png"> <span class="powerup-count" id="count-fifty">0</span>
                 </button>
-                <button class="powerup-btn" id="btn-use-hint" onclick="usePowerUp('hint')">
+                <button class="powerup-btn" id="btn-use-hint" onclick="usePowerUp('hint')" title="偷看提示">
                     <img src="images/item_hint.png"> <span class="powerup-count" id="count-hint">0</span>
                 </button>
-                <button class="powerup-btn" id="btn-use-skip" onclick="usePowerUp('skip')">
+                <button class="powerup-btn" id="btn-use-skip" onclick="usePowerUp('skip')" title="跳過這題">
                     <img src="images/item_skip.png"> <span class="powerup-count" id="count-skip">0</span>
                 </button>
             </div>
@@ -328,6 +286,7 @@
             <div id="explanation" class="explanation-box" style="display: none;">
                 <strong>💡 解析：</strong> <span id="explanation-text"></span>
             </div>
+
             <button id="next-btn" class="btn" style="display: none; width: 100%; margin-top: 25px;" onclick="nextQuestion()">下一題 ➡️</button>
         </div>
 
@@ -355,43 +314,50 @@
             </div>
         </div>
 
-        <div id="passport-modal" class="modal-overlay" onclick="closeModal('passport-modal')">
-            <div class="modal-content" onclick="event.stopPropagation()">
-                <button class="modal-close" onclick="closeModal('passport-modal')">×</button>
-                <h2>🛂 我的旅遊護照</h2>
-                <p>收集印章，解鎖冷知識！</p>
-                <div id="passport-grid" class="collection-grid"></div>
-            </div>
+        <div id="history-screen" style="display: none;" class="fade-in">
+            <h2>📜 冒險英雄榜</h2>
+            <ul id="history-list"></ul>
+            <div style="margin-top: 20px;"><button class="btn" onclick="goToLevelScreen()">🗺️ 返回</button></div>
+        </div>
+        <div id="history-detail-screen" style="display: none;" class="fade-in">
+            <h3>📜 試卷回顧</h3>
+            <ul id="history-review-list" class="review-list"></ul>
+            <button class="btn" onclick="showHistory()">⬅️ 返回</button>
         </div>
 
-        <div id="funfact-modal" class="modal-overlay" onclick="closeModal('funfact-modal')">
-            <div class="modal-content" onclick="event.stopPropagation()">
-                <button class="modal-close" onclick="closeModal('funfact-modal')">×</button>
-                <h3 id="ff-title">💡 冷知識</h3>
-                <div class="fun-fact-card">
-                    <p id="ff-content"></p>
-                </div>
-            </div>
+        <div id="collection-screen" style="display: none;" class="fade-in">
+            <h2>🎴 我的圖鑑 (80分獲得)</h2>
+            <div id="collection-grid" class="collection-grid"></div>
+            <div style="text-align:center; margin-top:20px;"><button class="btn" onclick="goToLevelScreen()">🗺️ 返回</button></div>
         </div>
-
+        
         <div id="shop-modal" class="modal-overlay" onclick="closeModal('shop-modal')">
             <div class="modal-content" onclick="event.stopPropagation()">
                 <button class="modal-close" onclick="closeModal('shop-modal')">×</button>
                 <h2>🏪 道具商店</h2>
-                <p>金幣：💰 <span id="shop-gold-display">0</span></p>
-                
-                <div class="shop-grid" style="margin-bottom:20px;">
-                    <div class="shop-item"><img src="images/item_5050.png"><h4>50/50</h4><p>刪去兩錯誤</p><div class="shop-price">💰 50</div><button class="btn btn-sm btn-gold" onclick="buyItem('fifty', 50)">購買</button></div>
-                    <div class="shop-item"><img src="images/item_hint.png"><h4>提示卡</h4><p>偷看提示</p><div class="shop-price">💰 30</div><button class="btn btn-sm btn-gold" onclick="buyItem('hint', 30)">購買</button></div>
-                    <div class="shop-item"><img src="images/item_skip.png"><h4>跳過卡</h4><p>跳過此題</p><div class="shop-price">💰 100</div><button class="btn btn-sm btn-gold" onclick="buyItem('skip', 100)">購買</button></div>
-                </div>
-
-                <div class="gacha-box">
-                    <h3 style="color:var(--purple-color);">🎰 紀念品扭蛋機 (100金幣/次)</h3>
-                    <p>收集紀念品來裝飾地圖吧！</p>
-                    <button class="btn btn-purple" onclick="playGacha()">🔮 轉一次</button>
-                    <div id="gacha-anim" class="gacha-anim">🌀 轉動中...</div>
-                    <div id="gacha-result" class="gacha-result"></div>
+                <p style="font-size:1.2em;">目前金幣：<img src="images/coin.png" width="25" style="vertical-align:middle;"> <span id="shop-user-gold">0</span></p>
+                <div class="shop-grid">
+                    <div class="shop-item">
+                        <img src="images/item_5050.png">
+                        <h4>50/50</h4>
+                        <p>刪去兩個錯誤選項</p>
+                        <div class="shop-price">💰 50</div>
+                        <button class="btn btn-sm btn-gold" onclick="buyItem('fifty', 50)">購買</button>
+                    </div>
+                    <div class="shop-item">
+                        <img src="images/item_hint.png">
+                        <h4>提示卡</h4>
+                        <p>偷看解析關鍵字</p>
+                        <div class="shop-price">💰 30</div>
+                        <button class="btn btn-sm btn-gold" onclick="buyItem('hint', 30)">購買</button>
+                    </div>
+                    <div class="shop-item">
+                        <img src="images/item_skip.png">
+                        <h4>跳過卡</h4>
+                        <p>跳過此題不計分</p>
+                        <div class="shop-price">💰 100</div>
+                        <button class="btn btn-sm btn-gold" onclick="buyItem('skip', 100)">購買</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -404,25 +370,18 @@
             </div>
         </div>
 
-        <div id="history-screen" style="display:none;" class="fade-in">
-             <h2>📜 歷史紀錄</h2><ul id="history-list"></ul><div style="margin-top:20px;"><button class="btn" onclick="goToLevelScreen()">🗺️ 返回</button></div>
-        </div>
-        <div id="history-detail-screen" style="display: none;" class="fade-in">
-            <h3>📜 試卷回顧</h3> <ul id="history-review-list" class="review-list"></ul> <button class="btn" onclick="showHistory()">⬅️ 返回</button>
+        <div id="card-modal" class="modal-overlay" onclick="closeModal('card-modal')">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="modal-close" onclick="closeModal('card-modal')">×</button>
+                <img id="modal-img" class="modal-img" src="">
+                <h3 id="modal-title" style="margin-top:10px;"></h3>
+            </div>
         </div>
 
         <div id="reward-overlay" class="modal-overlay" onclick="document.getElementById('reward-overlay').style.display='none'">
             <div class="reward-content" onclick="event.stopPropagation()">
                 <img id="reward-gif" class="reward-gif" src="">
                 <div class="reward-text">🎉 恭喜過關！ 🎉</div>
-            </div>
-        </div>
-        
-        <div id="card-modal" class="modal-overlay" onclick="closeModal('card-modal')">
-            <div class="modal-content" onclick="event.stopPropagation()">
-                <button class="modal-close" onclick="closeModal('card-modal')">×</button>
-                <img id="modal-img" class="modal-img" src="">
-                <h3 id="modal-title" style="margin-top:10px;"></h3>
             </div>
         </div>
     </div>
@@ -438,288 +397,430 @@
             { id: 'rich', title: '大富翁', desc: '持有金幣超過 1000', img: 'ach_rich.png' },
             { id: 'survivor', title: '不屈不撓', desc: '在錯題本中答對 5 題', img: 'ach_shield.png' }
         ];
-        const SOUVENIRS = [
-            {id: 's01', icon: '⛩️', name: '鳥居'}, {id: 's02', icon: '🏯', name: '城堡'}, {id: 's03', icon: '🗻', name: '富士山'},
-            {id: 's04', icon: '🦊', name: '狐狸'}, {id: 's05', icon: '🌸', name: '櫻花'}, {id: 's06', icon: '🎎', name: '人偶'},
-            {id: 's07', icon: '🍜', name: '拉麵'}, {id: 's08', icon: '🥬', name: '泡菜'}, {id: 's09', icon: '🍱', name: '便當'},
-            {id: 's10', icon: '🍣', name: '壽司'}, {id: 's11', icon: '🍶', name: '清酒'}, {id: 's12', icon: '🥢', name: '筷子'}
-        ];
 
-        let allQuestions = [], userName = "", currentAvatar = "avatar_boy1.png";
-        let currentLevelIdx = 0, currentQuizData = [], score = 0, timerInterval, timeRemaining = 20, quizStartTime;
+        let allQuestions = [], currentQuizQuestions = [], currentQuestionIndex = 0, score = 0;
+        let userName = "", currentLevel = 1, userAnswers = {}, isMistakeMode = false;
+        let currentAvatar = "avatar_boy1.png"; 
         let currentTrackIndex = 0, isPlaying = false;
-        let currentCombo = 0, goldEarnedThisRound = 0;
-        let isMistakeMode = false, userAnswers = {}, currentQuestionIndex = 0, currentLevel = 1;
-        let isDecorationMode = false, selectedSouvenir = null;
+        let currentCombo = 0, goldEarnedThisRound = 0, timerInterval, timeRemaining = 20, quizStartTime;
+
+        // 音效設定
+        let audioCorrect = new Audio('sounds/correct.mp3'); audioCorrect.volume = 0.4;
+        let audioFail = new Audio('sounds/fail.mp3'); audioFail.volume = 0.4;
+        let audioBuy = new Audio('sounds/buy.mp3'); audioBuy.volume = 0.6;
+        let audioUse = new Audio('sounds/use.mp3'); audioUse.volume = 0.6;
+        let audioUnlock = new Audio('sounds/unlock.mp3'); audioUnlock.volume = 0.6;
+        let audioCombo = new Audio('sounds/combo.mp3'); audioCombo.volume = 0.5;
+        let audioTimeout = new Audio('sounds/timeout.mp3'); audioTimeout.volume = 0.5;
 
         const bgmPlayer = document.getElementById('bgm-player');
-        const audioCorrect = new Audio('sounds/correct.mp3'); audioCorrect.volume=0.4;
-        const audioFail = new Audio('sounds/fail.mp3'); audioFail.volume=0.4;
-        const audioWin = new Audio('sounds/unlock.mp3'); audioWin.volume=0.6;
-        const audioBuy = new Audio('sounds/buy.mp3'); audioBuy.volume=0.6;
-        const audioUse = new Audio('sounds/use.mp3'); audioUse.volume=0.6;
-        const audioCombo = new Audio('sounds/combo.mp3'); audioCombo.volume=0.5;
-        const audioTimeout = new Audio('sounds/timeout.mp3'); audioTimeout.volume=0.5;
-        const audioUnlock = new Audio('sounds/unlock.mp3'); audioUnlock.volume=0.6;
         bgmPlayer.volume = 0.3; bgmPlayer.onended = nextTrack;
 
         function playMusic() { if(PLAYLIST.length===0)return; bgmPlayer.src = PLAYLIST[currentTrackIndex]; bgmPlayer.play().then(()=>isPlaying=true).catch(e=>{}); }
         function toggleMusic() { if (bgmPlayer.paused) { if(!bgmPlayer.src) bgmPlayer.src=PLAYLIST[currentTrackIndex]; bgmPlayer.play(); isPlaying=true; } else { bgmPlayer.pause(); isPlaying=false; } }
         function nextTrack() { currentTrackIndex = (currentTrackIndex + 1) % PLAYLIST.length; playMusic(); }
 
-        fetch('questions.json').then(res => res.json()).then(data => { allQuestions = data; renderQuickLogin(); }).catch(e => console.error("題目讀取失敗", e));
+        fetch('questions.json').then(res => res.json()).then(data => { allQuestions = data; renderQuickLogin(); }).catch(e => console.error(e));
 
         function getUserKey(key) { return userName + '_' + key; }
+        function getSavedUsers() { return JSON.parse(localStorage.getItem('savedUsers')) || []; }
+        
         function getUserData() {
-            let defaultData = { gold: 500, maxLevel: 0, levelScores: {}, inventory: { fifty: 2, hint: 2, skip: 2 }, stamps: [], collectedSouvenirs: [], decorations: [], daily: { date: '', tasks: [], claimed: false }, achievements: [] };
-            let stored = JSON.parse(localStorage.getItem(getUserKey('userData'))) || {};
-            return { ...defaultData, ...stored };
+            let data = JSON.parse(localStorage.getItem(getUserKey('userData'))) || {
+                gold: 500, inventory: { fifty: 0, hint: 0, skip: 0 }, achievements: [], maxLevel: 1, levelScores: {}
+            };
+            return data;
         }
-        function saveUserData(data) { localStorage.setItem(getUserKey('userData'), JSON.stringify(data)); updateUI(); }
+        function saveUserData(data) {
+            localStorage.setItem(getUserKey('userData'), JSON.stringify(data));
+            updateUIStats();
+        }
 
-        function updateUI() {
+        function updateUIStats() {
             let data = getUserData();
-            document.querySelectorAll('#user-gold, #shop-gold-display').forEach(el => el.innerText = data.gold);
-            let title = "🎒 背包客"; if (data.maxLevel >= 5) title = "🧭 探險家"; if (data.maxLevel >= 10) title = "🏔️ 領主"; if (data.maxLevel >= 16) title = "👑 地理大師";
-            if(document.getElementById('user-title')) document.getElementById('user-title').innerText = title;
-            let rankImg = "rank_1.png"; if(data.maxLevel >= 5) rankImg="rank_5.png"; if(data.maxLevel >= 10) rankImg="rank_10.png"; if(data.maxLevel > 16) rankImg="rank_max.png";
+            if(document.getElementById('user-gold')) document.getElementById('user-gold').innerText = data.gold;
+            if(document.getElementById('shop-user-gold')) document.getElementById('shop-user-gold').innerText = data.gold;
+            
+            let rankImg = "rank_1.png";
+            if(data.maxLevel >= 5) rankImg = "rank_5.png";
+            if(data.maxLevel >= 10) rankImg = "rank_10.png";
+            if(data.maxLevel > 13) rankImg = "rank_max.png";
             if(document.getElementById('rank-icon')) document.getElementById('rank-icon').src = "images/" + rankImg;
-            ['fifty', 'hint', 'skip'].forEach(k => { if(document.getElementById('count-'+k)) document.getElementById('count-'+k).innerText = data.inventory[k]; });
-        }
 
-        function renderQuickLogin() {
-            let users = JSON.parse(localStorage.getItem('savedUsers')) || [];
-            let html = '';
-            users.forEach(u => {
-                let name = u.name || u; let avatar = u.avatar || 'avatar_boy1.png';
-                html += `<div class="user-tag" onclick="login('${name}', '${avatar}')"><img src="images/${avatar}" style="width:20px;border-radius:50%;">${name}</div>`;
+            ['fifty', 'hint', 'skip'].forEach(item => {
+                let el = document.getElementById('count-' + item);
+                if(el) el.innerText = data.inventory[item];
+                let btn = document.getElementById('btn-use-' + item);
+                if(btn) btn.disabled = (data.inventory[item] <= 0);
             });
-            document.getElementById('quick-login-area').innerHTML = html;
         }
-        function selectAvatar(img, el) { currentAvatar = img; document.querySelectorAll('.avatar-option').forEach(o => o.classList.remove('selected')); el.classList.add('selected'); }
-        function loginAndStart() { let name = document.getElementById('username').value.trim(); if(!name) return alert("請輸入名字"); login(name, currentAvatar); }
-        function login(name, avatar) {
-            userName = name; currentAvatar = avatar;
-            let users = JSON.parse(localStorage.getItem('savedUsers')) || [];
-            users = users.filter(u => (u.name || u) !== name); users.push({name, avatar});
-            localStorage.setItem('savedUsers', JSON.stringify(users));
-            
-            // 每日簽到邏輯
-            let data = getUserData(); let today = new Date().toDateString();
-            if (data.daily.date !== today) {
-                data.daily.date = today; data.daily.claimed = false; 
-                data.gold += 50; document.getElementById('daily-reward-msg').style.display = 'block'; setTimeout(() => document.getElementById('daily-reward-msg').style.display = 'none', 3000);
-                saveUserData(data);
-            }
-            
-            showScreen('level-screen'); renderMap(); renderDecorations(); updateUI();
-            if (!isPlaying) playMusic();
-        }
-        function logout() { location.reload(); }
-        function exitQuiz() { if(confirm("確定要放棄目前的進度回到探險地圖嗎？")) goToLevelScreen(); }
 
-        // --- 地圖 ---
-        function renderMap() {
-            let container = document.getElementById('level-map'); container.innerHTML = '<div id="decoration-overlay" onclick="placeDecorationOnMap(event)"></div>';
-            let data = getUserData(); let maxLvl = data.maxLevel;
-            let rows = []; for (let i = 0; i < LEVEL_CONFIG.length; i += ITEMS_PER_ROW) rows.push(LEVEL_CONFIG.slice(i, i + ITEMS_PER_ROW));
-            rows.forEach((rowItems, rIdx) => {
-                let rowDiv = document.createElement('div'); rowDiv.className = 'level-row' + (rIdx % 2 !== 0 ? ' reverse' : '');
-                let startNum = rIdx * ITEMS_PER_ROW;
-                rowItems.forEach((_, idx) => {
-                    let absIdx = startNum + idx;
+        function selectAvatar(filename, element) {
+            currentAvatar = filename;
+            document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+        function renderQuickLogin() {
+            let users = getSavedUsers();
+            let container = document.getElementById('quick-login-area');
+            container.innerHTML = "";
+            if(users.length > 0) {
+                container.innerHTML = '<div style="width:100%; text-align:center; color:#666; font-size:0.9em;">快速登入</div>';
+                users.forEach(u => {
+                    let name = typeof u === 'string' ? u : u.name;
+                    let avatar = typeof u === 'string' ? 'avatar_boy1.png' : u.avatar;
+                    let div = document.createElement('div');
+                    div.innerHTML = `<span class="user-tag" onclick="quickLogin('${name}', '${avatar}')"><img src="images/${avatar}" style="width:25px;">${name}<span class="delete-user" onclick="event.stopPropagation(); deleteUser('${name}')">🗑️</span></span>`;
+                    container.appendChild(div);
+                });
+            }
+        }
+        function quickLogin(name, avatar) {
+            document.getElementById('username').value = name;
+            currentAvatar = avatar;
+            loginAndStart();
+        }
+        function deleteUser(name) {
+            if (!confirm(`確定要刪除「${name}」的所有資料嗎？`)) return;
+            if (!confirm(`⚠️ 警告：刪除後無法復原！`)) return;
+            localStorage.removeItem(name + '_userData');
+            localStorage.removeItem(name + '_mistakeBank');
+            localStorage.removeItem(name + '_quizHistory');
+            localStorage.removeItem(name + '_quizProgress'); // 清除舊版進度
+            let users = getSavedUsers().filter(u => (typeof u === 'string' ? u : u.name) !== name);
+            localStorage.setItem('savedUsers', JSON.stringify(users));
+            renderQuickLogin();
+        }
+        function loginAndStart() {
+            const inputName = document.getElementById('username').value.trim();
+            if (!inputName) { alert("請先輸入名字！"); return; }
+            userName = inputName;
+            localStorage.setItem('quizUserName', userName);
+            
+            let users = getSavedUsers().filter(u => (typeof u === 'string' ? u : u.name) !== userName);
+            users.push({ name: userName, avatar: currentAvatar });
+            localStorage.setItem('savedUsers', JSON.stringify(users));
+
+            if (!isPlaying) playMusic();
+            goToLevelScreen();
+        }
+
+        function goToLevelScreen() {
+            document.getElementById('display-name').innerText = userName;
+            document.getElementById('user-avatar-display').src = "images/" + currentAvatar;
+            document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none');
+            document.getElementById('level-screen').style.display = 'block';
+            updateUIStats(); renderLevelMap(); updateMistakeButton();
+        }
+
+        function startQuiz(mode, levelNum) {
+            isMistakeMode = (mode === 'mistake');
+            userAnswers = {}; score = 0; currentQuestionIndex = 0;
+            currentCombo = 0; goldEarnedThisRound = 0;
+            quizStartTime = Date.now();
+
+            if (isMistakeMode) {
+                let mistakeIds = JSON.parse(localStorage.getItem(getUserKey('mistakeBank'))) || [];
+                currentQuizQuestions = allQuestions.filter(q => mistakeIds.includes(q.id));
+                document.getElementById('level-title').innerText = "📕 錯題挑戰";
+            } else {
+                currentLevel = levelNum;
+                let startIndex = 0; for (let i = 0; i < levelNum - 1; i++) { startIndex += LEVEL_CONFIG[i]; }
+                let endIndex = startIndex + LEVEL_CONFIG[levelNum - 1];
+                currentQuizQuestions = allQuestions.slice(startIndex, endIndex);
+                document.getElementById('level-title').innerText = `🚩 第 ${levelNum} 關`;
+            }
+
+            if (currentQuizQuestions.length === 0) { alert("沒有題目！"); return; }
+            
+            document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none');
+            document.getElementById('quiz-content').style.display = 'block';
+            document.getElementById('total-q-num').innerText = currentQuizQuestions.length;
+            updateUIStats(); loadQuestion();
+        }
+
+        function loadQuestion() {
+            const currentQuestion = currentQuizQuestions[currentQuestionIndex];
+            document.getElementById('explanation').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('combo-display').style.display = 'none';
+            let qContainer = document.getElementById('question-container');
+            qContainer.classList.remove('fade-in'); void qContainer.offsetWidth; qContainer.classList.add('fade-in');
+
+            document.getElementById('current-q-num').innerText = currentQuestionIndex + 1;
+            document.getElementById('question-text').innerText = currentQuestion.question;
+            
+            const imgElement = document.getElementById('question-image');
+            if (currentQuestion.image) { imgElement.src = currentQuestion.image; imgElement.style.display = 'block'; } else { imgElement.style.display = 'none'; }
+
+            const optionsList = document.getElementById('options-list'); optionsList.innerHTML = '';
+            currentQuestion.options.forEach(option => {
+                const li = document.createElement('li'); const button = document.createElement('button');
+                button.className = 'option-btn'; button.innerText = option;
+                button.onclick = () => checkAnswer(button, option, currentQuestion);
+                li.appendChild(button); optionsList.appendChild(li);
+            });
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval); timeRemaining = 20;
+            let bar = document.getElementById('timer-bar');
+            bar.style.transition = 'none'; bar.style.width = '100%';
+            setTimeout(() => { bar.style.transition = 'width 20s linear'; bar.style.width = '0%'; }, 10);
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                if (timeRemaining <= 0) { clearInterval(timerInterval); handleTimeOut(); }
+            }, 1000);
+        }
+
+        function handleTimeOut() {
+            audioTimeout.play().catch(e=>{});
+            currentCombo = 0;
+            checkAnswer(null, "TIMEOUT", currentQuizQuestions[currentQuestionIndex], true);
+        }
+
+        function checkAnswer(btn, selectedOption, questionData, isTimeout = false) {
+            clearInterval(timerInterval);
+            const buttons = document.querySelectorAll('.option-btn'); buttons.forEach(button => button.disabled = true); 
+            let isCorrect = false; const correctCode = questionData.answer.substring(0, 3);
+
+            if (!isTimeout) {
+                userAnswers[questionData.id] = selectedOption;
+                const selectedCode = selectedOption.substring(0, 3);
+                isCorrect = (selectedCode === correctCode);
+            } else userAnswers[questionData.id] = "超時";
+
+            if (isCorrect) {
+                if(btn) btn.classList.add('correct');
+                score++; currentCombo++;
+                let goldEarn = 10 + (currentCombo > 1 ? (currentCombo * 2) : 0);
+                goldEarnedThisRound += goldEarn;
+                if(currentCombo > 1) {
+                    let comboEl = document.getElementById('combo-display');
+                    comboEl.innerText = `🔥 COMBO x${currentCombo}`; comboEl.style.display = 'block';
+                    audioCombo.play().catch(e=>{});
+                }
+                audioCorrect.play().catch(e=>{});
+                confetti({ particleCount: 30, spread: 40, origin: { y: 0.7 } });
+                if (isMistakeMode) removeFromMistakeBank(questionData.id);
+            } else {
+                if(btn) btn.classList.add('wrong');
+                currentCombo = 0; audioFail.play().catch(e=>{});
+                buttons.forEach(button => { if (button.innerText.substring(0, 3) === correctCode) button.classList.add('correct'); });
+                addToMistakeBank(questionData.id);
+            }
+            document.getElementById('explanation-text').innerText = questionData.explanation || "暫無解析";
+            document.getElementById('explanation').style.display = 'block';
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < currentQuizQuestions.length) loadQuestion(); else showResult();
+        }
+
+        function usePowerUp(type) {
+            let data = getUserData();
+            if (data.inventory[type] <= 0) return;
+            data.inventory[type]--; saveUserData(data);
+            audioUse.play().catch(e=>{});
+            if (type === 'fifty') {
+                const correctCode = currentQuizQuestions[currentQuestionIndex].answer.substring(0, 3);
+                let wrongs = [];
+                document.querySelectorAll('.option-btn').forEach(btn => { if(!btn.innerText.includes(correctCode)) wrongs.push(btn); });
+                wrongs.sort(() => 0.5 - Math.random()).slice(0, 2).forEach(btn => btn.style.visibility = 'hidden');
+            } else if (type === 'hint') {
+                alert("💡 提示：\n" + (currentQuizQuestions[currentQuestionIndex].explanation || "沒有提示資料..."));
+            } else if (type === 'skip') {
+                clearInterval(timerInterval); nextQuestion();
+            }
+            updateUIStats();
+        }
+
+        function openShop() { document.getElementById('shop-modal').style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        
+        function buyItem(item, cost) {
+            let data = getUserData();
+            if (data.gold >= cost) {
+                data.gold -= cost; data.inventory[item]++; saveUserData(data);
+                audioBuy.play().catch(e=>{}); alert("購買成功！");
+            } else alert("金幣不足！");
+        }
+
+        function openAchievements() {
+            let data = getUserData();
+            let list = document.getElementById('achievement-list'); list.innerHTML = "";
+            ACHIEVEMENTS.forEach(ach => {
+                let isUnlocked = data.achievements.includes(ach.id);
+                let div = document.createElement('div');
+                div.className = `achievement-item ${isUnlocked ? 'unlocked' : ''}`;
+                div.innerHTML = `<img src="images/${ach.img}" class="ach-icon"><div><h4>${ach.title}</h4><p>${ach.desc}</p></div>${isUnlocked?'✅':''}`;
+                list.appendChild(div);
+            });
+            document.getElementById('achievement-modal').style.display = 'flex';
+        }
+
+        function checkAchievements(finalScore, durationSeconds) {
+            let data = getUserData(); let newUnlock = false;
+            if (finalScore === 100 && !data.achievements.includes('sharpshooter')) { data.achievements.push('sharpshooter'); newUnlock = true; }
+            if (finalScore === 100 && durationSeconds < 180 && !data.achievements.includes('speedstar')) { data.achievements.push('speedstar'); newUnlock = true; }
+            if (data.gold >= 1000 && !data.achievements.includes('rich')) { data.achievements.push('rich'); newUnlock = true; }
+            if (isMistakeMode && score >= 5 && !data.achievements.includes('survivor')) { data.achievements.push('survivor'); newUnlock = true; }
+            if(newUnlock) { saveUserData(data); audioUnlock.play().catch(e=>{}); alert("🎉 恭喜！解鎖了新的成就！"); }
+        }
+
+        function showResult() {
+            let duration = (Date.now() - quizStartTime) / 1000;
+            document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none');
+            document.getElementById('score-box').style.display = 'block';
+            let finalScore = Math.round((score / currentQuizQuestions.length) * 100);
+            document.getElementById('final-score').innerText = finalScore;
+            document.getElementById('final-name').innerText = userName;
+            document.getElementById('final-gold').innerText = goldEarnedThisRound;
+            let data = getUserData(); data.gold += goldEarnedThisRound;
+            let comment = "", isPass = finalScore >= 80;
+            if(finalScore === 100) comment = "🏆 完美通關！"; else if(finalScore >= 80) comment = "🎉 恭喜過關！"; else comment = "💪 加油！";
+            document.getElementById('score-comment').innerText = comment;
+            let unlockMsg = document.getElementById('unlock-msg');
+            let newCardAlert = document.getElementById('new-card-alert');
+            let gotNewCard = false;
+
+            if (!isMistakeMode && isPass) {
+                if (finalScore >= 80) {
+                    let oldScore = data.levelScores[currentLevel];
+                    if (oldScore === undefined || oldScore < 80) gotNewCard = true;
+                }
+                if (currentLevel === data.maxLevel && currentLevel < LEVEL_CONFIG.length) {
+                    unlockMsg.style.display = 'block'; data.maxLevel++;
+                } else unlockMsg.style.display = 'none';
+                
+                if (!data.levelScores[currentLevel] || finalScore > data.levelScores[currentLevel]) data.levelScores[currentLevel] = finalScore;
+                if(finalScore >= 80) {
+                    let gif = REWARD_GIFS[Math.floor(Math.random()*REWARD_GIFS.length)];
+                    document.getElementById('reward-gif').src = "images/" + gif;
+                    document.getElementById('reward-overlay').style.display = 'flex';
+                }
+                confetti({ particleCount: 200, spread: 150 });
+            } else unlockMsg.style.display = 'none';
+            
+            saveUserData(data); checkAchievements(finalScore, duration);
+            if(gotNewCard) newCardAlert.style.display = 'block'; else newCardAlert.style.display = 'none';
+            saveHistory(userName, finalScore, currentQuizQuestions, userAnswers, isMistakeMode ? "錯題挑戰" : `第 ${currentLevel} 關`);
+            renderReviewList('review-list', currentQuizQuestions, userAnswers);
+        }
+
+        function renderLevelMap() {
+            const container = document.getElementById('level-map'); container.innerHTML = "";
+            const data = getUserData();
+            let rows = [];
+            for (let i = 0; i < LEVEL_CONFIG.length; i += ITEMS_PER_ROW) rows.push(LEVEL_CONFIG.slice(i, i + ITEMS_PER_ROW));
+            rows.forEach((rowItems, rowIndex) => {
+                let rowDiv = document.createElement('div'); rowDiv.className = 'level-row';
+                let isReverse = (rowIndex % 2 !== 0); if (isReverse) rowDiv.classList.add('reverse');
+                let startLevelNum = rowIndex * ITEMS_PER_ROW + 1;
+                rowItems.forEach((_, itemIndex) => {
+                    let levelNum = startLevelNum + itemIndex;
+                    let wrapper = document.createElement('div'); wrapper.className = 'level-wrapper';
                     let btn = document.createElement('button'); btn.className = 'level-btn';
-                    let label = `第 ${absIdx+1} 關`;
-                    let status = "🔒";
-                    if (absIdx <= maxLvl) {
-                        let score = data.levelScores[absIdx]; status = (score !== undefined) ? (score >= 80 ? "⭐" : "🚩") : "GO!";
-                        btn.onclick = () => enterLevel(absIdx);
-                    } else btn.disabled = true;
-                    btn.innerHTML = `<div class="level-title">${label}</div><div class="level-score">${status}</div>`;
-                    if (absIdx === maxLvl) { let ava = document.createElement('img'); ava.src = "images/" + currentAvatar; ava.className = "map-avatar"; btn.appendChild(ava); }
-                    let wrapper = document.createElement('div'); wrapper.className = 'level-wrapper'; wrapper.appendChild(btn);
-                    if (idx < rowItems.length - 1) { let arrow = document.createElement('div'); arrow.className = 'arrow-icon'; arrow.innerText = '➜'; if(rIdx % 2 !== 0) arrow.style.transform = "scaleX(-1)"; wrapper.appendChild(arrow); }
+                    if (levelNum <= data.maxLevel) {
+                        let bestScore = data.levelScores[levelNum];
+                        let icon = bestScore >= 80 ? '🚩' : '🏳️';
+                        if (bestScore === 100) icon = '👑'; else if (bestScore >= 90) icon = '⭐';
+                        let scoreText = bestScore !== undefined ? `<div class="level-score">${bestScore}分</div>` : '<div class="level-score">GO!</div>';
+                        btn.innerHTML = `<div class="level-title">${icon} 第 ${levelNum} 關</div>${scoreText}`;
+                        btn.onclick = () => startQuiz('level', levelNum);
+                        if (levelNum === data.maxLevel) {
+                            let avatarImg = document.createElement('img'); avatarImg.src = "images/" + currentAvatar; avatarImg.className = "map-avatar"; wrapper.appendChild(avatarImg);
+                        }
+                    } else {
+                        btn.disabled = true; btn.innerHTML = `<div class="level-title">🔒 第 ${levelNum} 關</div><div class="level-score" style="color:gray">鎖定</div>`;
+                    }
+                    wrapper.appendChild(btn);
+                    if (itemIndex < rowItems.length - 1) {
+                        let arrow = document.createElement('div'); arrow.className = 'arrow-icon';
+                        if (isReverse) { arrow.innerHTML = '➜'; arrow.classList.add('arrow-left'); } else { arrow.innerText = '➜'; arrow.classList.add('arrow-right'); }
+                        wrapper.appendChild(arrow);
+                    }
                     rowDiv.appendChild(wrapper);
                 });
                 container.appendChild(rowDiv);
-                if (rIdx < rows.length - 1) { let connectorDiv = document.createElement('div'); connectorDiv.className = 'row-connector'; let downArrow = document.createElement('div'); downArrow.className = 'arrow-icon arrow-down'; downArrow.innerText = '⬇'; if (rIdx % 2 !== 0) connectorDiv.classList.add('left'); connectorDiv.appendChild(downArrow); container.appendChild(connectorDiv); }
-            });
-        }
-
-        // --- 遊戲邏輯 ---
-        function enterLevel(idx) { currentLevelIdx = idx; startMCQ(idx); }
-        function startMCQ(levelIdx) {
-            let startQ = 0; for(let i=0; i<levelIdx; i++) startQ += MCQ_COUNTS[i];
-            let count = MCQ_COUNTS[levelIdx];
-            currentQuizData = allQuestions.slice(startQ, startQ + count);
-            currentQuestionIndex = 0; score = 0; currentCombo = 0; goldEarnedThisRound = 0; quizStartTime = Date.now();
-            showScreen('quiz-content'); document.getElementById('level-title').innerText = `第 ${levelIdx+1} 關`; document.getElementById('total-q-num').innerText = count;
-            loadQuestion();
-        }
-        function loadQuestion() {
-            let q = currentQuizData[currentQuestionIndex];
-            document.getElementById('current-q-num').innerText = currentQuestionIndex + 1;
-            document.getElementById('question-text').innerText = (currentQuestionIndex + 1) + ". " + q.question;
-            let imgEl = document.getElementById('question-image');
-            if(q.image) { imgEl.src = q.image; imgEl.style.display='block'; } else imgEl.style.display='none';
-            let opts = document.getElementById('options-list'); opts.innerHTML = '';
-            q.options.forEach(opt => { opts.innerHTML += `<button class="option-btn" onclick="checkMCQ(this, '${opt}')">${opt}</button>`; });
-            document.getElementById('explanation').style.display = 'none'; document.getElementById('next-btn').style.display = 'none';
-            resetTimer();
-        }
-        function checkMCQ(btn, ans) {
-            clearInterval(timerInterval);
-            let q = currentQuizData[currentQuestionIndex];
-            let correctCode = q.answer.substring(0,1); let userCode = ans.substring(0,1); if (ans.startsWith('(')) userCode = ans.substring(1,2);
-            document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
-            if (userCode === correctCode) { 
-                if(btn) btn.classList.add('correct'); score++; currentCombo++;
-                let earn = 10 + (currentCombo > 1 ? (currentCombo * 2) : 0); goldEarnedThisRound += earn;
-                if(currentCombo > 1) { let el = document.getElementById('combo-display'); el.innerText = `🔥 COMBO x${currentCombo}`; el.style.display='block'; audioCombo.play().catch(()=>{}); }
-                audioCorrect.play(); 
-            } else { 
-                if(btn) btn.classList.add('wrong'); currentCombo=0; audioFail.play(); 
-            }
-            document.getElementById('explanation-text').innerText = q.explanation; document.getElementById('explanation').style.display = 'block'; document.getElementById('next-btn').style.display = 'block';
-        }
-        function nextQuestion() { currentQuestionIndex++; if(currentQuestionIndex < currentQuizData.length) loadQuestion(); else endLevel(true); }
-
-        function resetTimer() {
-            timeRemaining = 20; document.getElementById('timer-bar').style.width = '100%'; clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                timeRemaining--; document.getElementById('timer-bar').style.width = (timeRemaining/20*100)+'%';
-                if(timeRemaining<=0) { clearInterval(timerInterval); audioTimeout.play().catch(()=>{}); currentCombo=0; checkMCQ(null, "WRONG"); }
-            }, 1000);
-        }
-
-        // --- 結算 ---
-        function endLevel(isMCQ, isWin=false) {
-            showScreen('score-box');
-            let finalScore = Math.round((score / currentQuizData.length) * 100);
-            document.getElementById('final-score').innerText = finalScore; document.getElementById('final-name').innerText = userName;
-            let earnedGold = goldEarnedThisRound;
-            document.getElementById('earned-gold').innerText = earnedGold;
-            
-            let data = getUserData(); data.gold += earnedGold;
-            let unlockMsg = document.getElementById('unlock-msg'); let newStampAlert = document.getElementById('new-stamp-alert');
-            unlockMsg.style.display='none'; newStampAlert.style.display='none';
-
-            // 及格門檻設定為 80 分
-            if (finalScore >= 80) {
-                if (currentLevelIdx === data.maxLevel && currentLevelIdx < LEVEL_CONFIG.length - 1) { data.maxLevel++; unlockMsg.style.display = 'block'; }
-                if (!data.levelScores[currentLevelIdx] || finalScore > data.levelScores[currentLevelIdx]) data.levelScores[currentLevelIdx] = finalScore;
-                // 獲得圖鑑卡片 (80分)
-                if (!data.stamps.includes(currentLevelIdx)) {
-                    data.stamps.push(currentLevelIdx);
-                    newStampAlert.style.display = 'block';
+                if (rowIndex < rows.length - 1) {
+                    let connectorDiv = document.createElement('div'); connectorDiv.className = 'row-connector';
+                    let downArrow = document.createElement('div'); downArrow.className = 'arrow-icon arrow-down'; downArrow.innerText = '⬇';
+                    if (isReverse) connectorDiv.classList.add('left');
+                    connectorDiv.appendChild(downArrow); container.appendChild(connectorDiv);
                 }
-                
-                confetti({ particleCount: 150, spread: 180 }); audioWin.play();
-                let gif = REWARD_GIFS[Math.floor(Math.random()*REWARD_GIFS.length)];
-                document.getElementById('reward-gif').src = "images/" + gif;
-                document.getElementById('reward-overlay').style.display = 'flex';
-            }
-            saveUserData(data); checkAchievements(finalScore);
-            saveHistory(userName, finalScore, currentQuizQuestions, userAnswers, isMistakeMode ? "錯題挑戰" : `第 ${currentLevelIdx+1} 關`);
-        }
-
-        function checkAchievements(finalScore) {
-            let data = getUserData(); let newUnlock = false;
-            if (finalScore === 100 && !data.achievements.includes('sharpshooter')) { data.achievements.push('sharpshooter'); newUnlock = true; }
-            if (data.gold >= 1000 && !data.achievements.includes('rich')) { data.achievements.push('rich'); newUnlock = true; }
-            if(newUnlock) { saveUserData(data); audioUnlock.play().catch(e=>{}); alert("🎉 解鎖新成就！"); }
-        }
-
-        // --- 裝飾 ---
-        function toggleDecorationMode() {
-            isDecorationMode = !isDecorationMode;
-            document.getElementById('decoration-overlay').style.display = isDecorationMode ? 'block' : 'none';
-            document.getElementById('decoration-toolbar').style.display = isDecorationMode ? 'flex' : 'none';
-            if(isDecorationMode) renderSouvenirList();
-        }
-        function renderSouvenirList() {
-            let data = getUserData();
-            let list = document.getElementById('souvenir-list'); list.innerHTML = "";
-            SOUVENIRS.forEach(item => {
-                let has = data.collectedSouvenirs.includes(item.id);
-                let div = document.createElement('div'); div.className = `souvenir-item ${has?'':'locked'}`; div.innerText = item.icon;
-                if(has) div.onclick = () => { selectedSouvenir = item; document.querySelectorAll('.souvenir-item').forEach(e=>e.classList.remove('selected')); div.classList.add('selected'); };
-                list.appendChild(div);
             });
         }
-        function placeDecorationOnMap(e) {
-            if(!selectedSouvenir) return;
-            let rect = document.getElementById('level-map').getBoundingClientRect();
-            let x = (e.clientX - rect.left)/rect.width*100; let y = (e.clientY - rect.top)/rect.height*100;
-            let data = getUserData(); data.decorations.push({id:Date.now(), icon:selectedSouvenir.icon, x, y}); saveUserData(data);
-            renderDecorations(); audioUse.play().catch(()=>{});
-        }
-        function renderDecorations() {
-            let data = getUserData();
-            document.querySelectorAll('.map-decoration').forEach(e => e.remove());
-            let container = document.getElementById('level-map');
-            data.decorations.forEach(d => {
-                let el = document.createElement('div'); el.className = 'map-decoration'; el.innerText = d.icon;
-                el.style.left = d.x+'%'; el.style.top = d.y+'%';
-                el.onclick = (e) => { if(isDecorationMode) { e.stopPropagation(); if(confirm("移除?")) { data.decorations=data.decorations.filter(x=>x.id!==d.id); saveUserData(data); renderDecorations(); } } };
-                container.appendChild(el);
-            });
-        }
-        function playGacha() {
-            let data = getUserData(); if(data.gold < 100) { alert("金幣不足"); return; }
-            data.gold -= 100; saveUserData(data); audioBuy.play().catch(()=>{});
-            document.getElementById('gacha-anim').style.display = 'block'; document.getElementById('gacha-result').style.display = 'none';
-            setTimeout(() => {
-                document.getElementById('gacha-anim').style.display = 'none';
-                let prize = SOUVENIRS[Math.floor(Math.random() * SOUVENIRS.length)];
-                if(!data.collectedSouvenirs.includes(prize.id)) { data.collectedSouvenirs.push(prize.id); saveUserData(data); }
-                document.getElementById('gacha-result').innerText = `獲得：${prize.icon} ${prize.name}！`;
-                document.getElementById('gacha-result').style.display = 'block';
-                audioWin.play().catch(()=>{});
-            }, 1000);
-        }
 
-        // --- 輔助 ---
-        function showScreen(id) { document.querySelectorAll('.quiz-container > div').forEach(el => { if(el.id && !el.id.includes('modal')) el.style.display = 'none'; }); document.getElementById(id).style.display = 'block'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function openPassport() { 
-            document.getElementById('collection-screen').style.display = 'block';
-            showCollection(); // 呼叫 v3.x 版的圖鑑函式 (這裡沿用舊版圖鑑UI，但按鈕改名為護照)
-        }
         function showCollection() {
             document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none');
             document.getElementById('collection-screen').style.display = 'block';
-            const grid = document.getElementById('collection-grid'); grid.innerHTML = ""; const data = getUserData();
+            const grid = document.getElementById('collection-grid'); grid.innerHTML = "";
+            const data = getUserData();
             for (let i = 1; i <= LEVEL_CONFIG.length; i++) {
-                let bestScore = data.levelScores[i-1]; // 注意索引對齊
+                let bestScore = data.levelScores[i];
                 let isUnlocked = (bestScore !== undefined && bestScore >= 80);
-                let numStr = i < 10 ? `0${i}` : `${i}`; let imgSrc = `images/card_${numStr}.jpg`;
+                let numStr = i < 10 ? `0${i}` : `${i}`;
+                let imgSrc = `images/card_${numStr}.jpg`;
                 let cardItem = document.createElement('div');
                 if (isUnlocked) {
-                    cardItem.className = 'card-item'; cardItem.innerHTML = `<img src="${imgSrc}" class="card-img" onerror="this.style.display='none'">`;
+                    cardItem.className = 'card-item';
+                    cardItem.innerHTML = `<img src="${imgSrc}" class="card-img" onerror="this.style.display='none'">`;
                     cardItem.onclick = () => openCardModal(imgSrc, `第 ${i} 關獎勵`);
                 } else {
-                    cardItem.className = 'card-item locked'; cardItem.innerHTML = `<img src="${imgSrc}" class="card-img" onerror="this.style.display='none'"><div class="card-overlay"><div class="card-lock-icon">🔒</div><div class="card-label">第 ${i} 關</div></div>`;
+                    cardItem.className = 'card-item locked';
+                    cardItem.innerHTML = `<img src="${imgSrc}" class="card-img" onerror="this.style.display='none'"><div class="card-overlay"><div class="card-lock-icon">🔒</div><div class="card-label">第 ${i} 關</div></div>`;
                 }
                 grid.appendChild(cardItem);
             }
         }
         function openCardModal(src, title) { document.getElementById('modal-img').src = src; document.getElementById('modal-title').innerText = title; document.getElementById('card-modal').style.display = 'flex'; }
-        function openShop() { document.getElementById('shop-modal').style.display = 'flex'; document.getElementById('shop-gold-display').innerText = getUserData().gold; }
-        function buyItem(item, cost) { let data = getUserData(); if(data.gold>=cost) { data.gold-=cost; data.inventory[item]++; saveUserData(data); alert("購買成功"); document.getElementById('shop-gold-display').innerText=data.gold; } else alert("金幣不足"); }
-        function usePowerUp(type) { let data = getUserData(); if(data.inventory[type]>0) { data.inventory[type]--; saveUserData(data); if(type==='fifty') { let correct=currentQuizData[currentQuestionIndex].answer[1]; Array.from(document.querySelectorAll('.option-btn')).filter(b=>!b.innerText.includes(correct)).slice(0,2).forEach(b=>b.style.visibility='hidden'); } else if(type==='hint') alert(currentQuizData[currentQuestionIndex].explanation); else if(type==='skip') nextQuestion(); } else alert("道具不足"); updateUI(); }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
         
-        // --- 錯題與歷史 (簡化) ---
-        function goToLevelScreen() { showScreen('level-screen'); renderMap(); updateUI(); renderDecorations(); }
-        
-        // 以下沿用 v4.1 的歷史紀錄相關函式
+        function getMistakeBank() { return JSON.parse(localStorage.getItem(getUserKey('mistakeBank'))) || []; }
+        function updateMistakeButton() {
+            let mistakes = getMistakeBank();
+            let btn = document.getElementById('btn-mistake');
+            if (mistakes.length > 0) { btn.style.display = 'inline-block'; document.getElementById('mistake-count').innerText = mistakes.length; } 
+            else btn.style.display = 'none';
+        }
+        function addToMistakeBank(id) {
+            let mistakes = getMistakeBank();
+            if (!mistakes.includes(id)) { mistakes.push(id); localStorage.setItem(getUserKey('mistakeBank'), JSON.stringify(mistakes)); }
+        }
+        function removeFromMistakeBank(id) {
+            let mistakes = getMistakeBank();
+            mistakes = mistakes.filter(mId => mId !== id);
+            localStorage.setItem(getUserKey('mistakeBank'), JSON.stringify(mistakes));
+        }
+        function toggleReview() {
+            let reviewArea = document.getElementById('full-review-area');
+            reviewArea.style.display = (reviewArea.style.display === 'none') ? 'block' : 'none';
+            if (reviewArea.style.display === 'block') reviewArea.scrollIntoView({ behavior: 'smooth' });
+        }
+        function renderReviewList(elementId, questionsData, answersData) {
+            let list = document.getElementById(elementId); list.innerHTML = "";
+            questionsData.forEach((q, index) => {
+                let userAns = answersData[q.id], correctAns = q.answer;
+                let isRight = (userAns && userAns.substring(0,3) === correctAns.substring(0,3));
+                let tagClass = isRight ? "tag-correct" : "tag-wrong", tagText = isRight ? "答對" : "答錯";
+                let html = `<li class="review-item" style="padding:15px; border-radius:10px;"><div style="font-weight:bold; margin-bottom:10px;"><span class="tag ${tagClass}">${tagText}</span> ${index + 1}. ${q.question}</div>`;
+                if (q.image) html += `<img src="${q.image}" style="max-height:150px; display:block; margin:10px 0;">`;
+                html += `<div style="font-size:0.9em; color:#555;">你的答案：${userAns || "未作答"} <br> 正確答案：<span style="color:#27AE60; font-weight:bold;">${correctAns}</span></div><div style="margin-top:5px; background:#f0f0f0; padding:8px; border-radius:5px; font-size:0.9em;">💡 ${q.explanation || "無解析"}</div></li>`;
+                list.innerHTML += html;
+            });
+        }
         function saveHistory(name, score, questionsData, answersData, modeName) {
             let history = JSON.parse(localStorage.getItem(getUserKey('quizHistory'))) || [];
             let record = { id: Date.now(), name: name, score: score, date: new Date().toLocaleString(), mode: modeName, answers: answersData, questionIds: questionsData.map(q => q.id) };
             history.push(record); localStorage.setItem(getUserKey('quizHistory'), JSON.stringify(history));
         }
         function showHistory() {
-            document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none'); document.getElementById('history-screen').style.display = 'block';
+            document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none');
+            document.getElementById('history-screen').style.display = 'block';
             let history = JSON.parse(localStorage.getItem(getUserKey('quizHistory'))) || [];
             let list = document.getElementById('history-list'); list.innerHTML = "";
             if(history.length === 0) list.innerHTML = "<li style='justify-content:center'>暫無紀錄</li>";
@@ -731,8 +832,25 @@
                 });
             }
         }
-        function deleteHistoryItem(id) { if(!confirm("確定刪除？")) return; if(!confirm("無法復原，確定？")) return; let history = JSON.parse(localStorage.getItem(getUserKey('quizHistory'))) || []; history = history.filter(r => r.id !== id); localStorage.setItem(getUserKey('quizHistory'), JSON.stringify(history)); showHistory(); }
-        function replayHistory(recordId) { let history = JSON.parse(localStorage.getItem(getUserKey('quizHistory'))) || []; let record = history.find(r => r.id === recordId); if (!record) return; document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none'); document.getElementById('history-detail-screen').style.display = 'block'; let examQuestions = allQuestions.filter(q => record.questionIds.includes(q.id)); renderReviewList('history-review-list', examQuestions, record.answers); }
+        function deleteHistoryItem(id) {
+            if(!confirm("確定要刪除這筆作答紀錄嗎？")) return;
+            if(!confirm("⚠️ 警告：刪除後無法復原！\n您真的確定要刪除嗎？")) return;
+            let history = JSON.parse(localStorage.getItem(getUserKey('quizHistory'))) || [];
+            history = history.filter(r => r.id !== id);
+            localStorage.setItem(getUserKey('quizHistory'), JSON.stringify(history));
+            showHistory();
+        }
+        function replayHistory(recordId) {
+            let history = JSON.parse(localStorage.getItem(getUserKey('quizHistory'))) || [];
+            let record = history.find(r => r.id === recordId);
+            if (!record) return;
+            document.querySelectorAll('.quiz-container > div').forEach(el => el.style.display = 'none');
+            document.getElementById('history-detail-screen').style.display = 'block';
+            document.getElementById('history-date').innerText = record.date;
+            document.getElementById('history-score').innerText = record.score;
+            let examQuestions = allQuestions.filter(q => record.questionIds.includes(q.id));
+            renderReviewList('history-review-list', examQuestions, record.answers);
+        }
     </script>
 </body>
 </html>
